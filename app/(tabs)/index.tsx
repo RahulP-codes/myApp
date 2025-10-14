@@ -1,22 +1,630 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  RefreshControl,
+  Dimensions,
+  ImageBackground,
+  Linking,
+} from "react-native";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router, usePathname } from "expo-router";
+import { Platform } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  List,
+  Modal,
+  Portal,
+  RadioButton,
+} from "react-native-paper";
+import { Event, Highlight } from "../../components/home";
+import { useEvent } from "../../hooks/query/events-query";
+import { useEventStore } from "../../store/events-store";
+import { filterData } from "../../utils/helper";
+import { useProfileStore } from "../../store/profile-store";
 
 export default function HomeScreen() {
+  const { data: EventData, isLoading, refetch } = useEvent();
+  const name = useProfileStore((state) => state.name);
+  const isguest = useProfileStore((state) => state.isGuest);
+
+  const [visible, setVisible] = useState(false);
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
+
+  const [categories, setCategories] = useState<string[]>([]);
+  const [days, setDays] = useState<string[]>([]);
+  const [venues, setVenues] = useState<string[]>([]);
+
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterDay, setFilterDay] = useState<string[]>(["1", "2"]);
+  const [filterVenue, setFilterVenue] = useState("");
+
+  const onGoingEvents = useEventStore((state) => state.onGoing);
+  const upcommingEvents = useEventStore((state) => state.upcoming);
+  const completedEvents = useEventStore((state) => state.completed);
+  const setOnGoingEvents = useEventStore((state) => state.setOnGoing);
+  const setUpcommingEvents = useEventStore((state) => state.setUpcoming);
+  const setCompletedEvents = useEventStore((state) => state.setCompleted);
+
+  const togglefilter = (filtername) => {
+    if (filterCategory === filtername) {
+      setFilterCategory("");
+    } else {
+      setFilterCategory(filtername);
+    }
+  };
+
+  useEffect(() => {
+    const timeNow = new Date();
+    EventData?.data?.other.forEach((item) => {
+      if (!categories.includes(item.category)) {
+        setCategories([...categories, item.category]);
+      }
+      if (!days.includes(item.day)) {
+        setDays([...days, item.day]);
+      }
+      if (!venues.includes(item.venue.name)) {
+        setVenues([...venues, item.venue.name]);
+      }
+
+      if (
+        new Date(item.startTime) < timeNow &&
+        new Date(item.endTime) > timeNow
+      ) {
+        setOnGoingEvents(item);
+      } else if (new Date(item.startTime) > timeNow) {
+        setUpcommingEvents(item);
+      } else if (new Date(item.endTime) < timeNow) {
+        setCompletedEvents(item);
+      }
+    });
+
+    EventData?.data?.highlights.forEach((item) => {
+      if (!categories.includes(item.category)) {
+        setCategories([...categories, item.category]);
+      }
+      if (!days.includes(item.day)) {
+        setDays([...days, item.day]);
+      }
+      if (!venues.includes(item.venue.name)) {
+        setVenues([...venues, item.venue.name]);
+      }
+    });
+  }, [EventData]);
+
+  const handleResetModal = async () => {
+    setFilterCategory("");
+    setFilterDay(["1", "2"]);
+    setFilterVenue("");
+  };
+
+
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home Screen</Text>
-    </View>
+    <ImageBackground
+      source={require('../../assets/images/homeBg.png')}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        <View style={styles.container}>
+          <Portal>
+            <Modal
+              visible={visible}
+              onDismiss={hideModal}
+              contentContainerStyle={styles.containerStyle}
+            >
+              <ScrollView>
+                <List.Accordion
+                  title="Categories"
+                  style={styles.accordion}
+                  titleStyle={styles.accordionTitle}
+                >
+                  <View>
+                    <RadioButton.Group
+                      onValueChange={(newValue) => setFilterCategory(newValue)}
+                      value={filterCategory}
+                    >
+                      {categories.map((item, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                              if (filterCategory === item) {
+                                setFilterCategory("");
+                              } else {
+                                setFilterCategory(item);
+                              }
+                            }}
+                          >
+                            <View style={styles.itemList}>
+                              <RadioButton value={item} />
+                              <Text style={styles.itemText}>{item}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </RadioButton.Group>
+                  </View>
+                </List.Accordion>
+
+                <Divider style={styles.divider} />
+
+                <List.Accordion
+                  title="Venue"
+                  style={styles.accordion}
+                  titleStyle={styles.accordionTitle}
+                >
+                  <View>
+                    <RadioButton.Group
+                      onValueChange={(newValue) => setFilterVenue(newValue)}
+                      value={filterVenue}
+                    >
+                      {venues.map((item, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                              if (filterVenue === item) {
+                                setFilterVenue("");
+                              } else {
+                                setFilterVenue(item);
+                              }
+                            }}
+                          >
+                            <View style={styles.itemList}>
+                              <RadioButton value={item} />
+                              <Text style={styles.itemText}>{item}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </RadioButton.Group>
+                  </View>
+                </List.Accordion>
+              </ScrollView>
+              <View style={styles.modalFooter}>
+                <Button mode="contained" onPress={handleResetModal}>
+                  Reset
+                </Button>
+                <Button mode="contained" onPress={hideModal}>
+                  Done
+                </Button>
+              </View>
+            </Modal>
+          </Portal>
+
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+            }
+          >
+            {isLoading ? (
+              <ActivityIndicator
+                animating={true}
+                color="#5443ab"
+                size="large"
+                style={{ marginTop: 20 }}
+              />
+            ) : (
+              <>
+                {isguest ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      Linking.openURL("https://ecell.in/esummit/register");
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.section,
+                        { backgroundColor: "red", padding: 25, paddingBottom: 7 },
+                      ]}
+                    >
+                      <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
+                        You are Signed in as guest user
+                      </Text>
+                      <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
+                        Register Now and Relogin to get entry in E-Summit
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontSize: 20,
+                          fontFamily: "ProximaBold",
+                        }}
+                      >
+                        Click here!
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : null}
+                <View style={styles.section}>
+                  <Text style={styles.heading}>HIGHLIGHT SESSIONS</Text>
+
+                  <ScrollView horizontal style={styles.highlightScroll}>
+                    {EventData?.data?.highlights.map((item, index) => (
+                      <View key={index} style={{ width: Dimensions.get('window').width - 40 }}>
+                        <Highlight
+                          url={item.image}
+                          alt={item.name}
+                          id={item.id}
+                          index={index}
+                          length={EventData?.data.highlights.length}
+                          venue={item.venue.name}
+                          day={item.day}
+                          startTime={item.startTime}
+                          isLive={
+                            new Date(item.startTime) < new Date() &&
+                            new Date(item.endTime) > new Date()
+                          }
+                        />
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+
+                <View style={styles.headcont2}>
+                  <Button
+                    style={[
+                      styles.daybutton,
+                      {
+                        backgroundColor:
+                          filterDay.length === 2 ? "#382ad3" : "hsla(0, 0.00%, 100.00%, 0.05)",
+                      },
+                    ]}
+                    onPress={() => setFilterDay(["1", "2"])}
+                  >
+                    <Text style={styles.daybuttonText}>ALL</Text>
+                  </Button>
+                  <Button
+                    style={[
+                      styles.daybutton,
+                      {
+                        backgroundColor:
+                          filterDay.includes("1") && filterDay.length === 1
+                            ? "#382ad3"
+                            : "hsla(0, 0.00%, 100.00%, 0.05)",
+                      },
+                    ]}
+                    onPress={() => setFilterDay(["1"])}
+                  >
+                    <Text style={styles.daybuttonText}>DAY 1</Text>
+                  </Button>
+                  <Button
+                    style={[
+                      styles.daybutton,
+                      {
+                        backgroundColor:
+                          filterDay.includes("2") && filterDay.length === 1
+                            ? "#382ad3"
+                            : "hsla(0, 0.00%, 100.00%, 0.05)",
+                      },
+                    ]}
+                    onPress={() => setFilterDay(["2"])}
+                  >
+                    <Text style={styles.daybuttonText}>DAY 2</Text>
+                  </Button>
+                </View>
+
+                <View style={styles.section}>
+                  <View style={styles.iconsContainer}>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("oat")}
+                      style={
+                        filterCategory === "oat" ? styles.icon2 : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>OAT Event</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("ltpcsa")}
+                      style={
+                        filterCategory === "ltpcsa" ? styles.icon2 : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>LT-PCSA</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("lhc")}
+                      style={
+                        filterCategory === "lhc" ? styles.icon2 : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>LHC Sessions</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("convo")}
+                      style={
+                        filterCategory === "convo" ? styles.icon2 : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>Convocation Hall</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("startup events")}
+                      style={
+                        filterCategory === "startup events"
+                          ? styles.icon2
+                          : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>Startup Events</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglefilter("student events")}
+                      style={
+                        filterCategory === "student events"
+                          ? styles.icon2
+                          : styles.icon
+                      }
+                    >
+                      <Text style={styles.iconText}>Student Events</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {onGoingEvents.length > 0 && (
+                  <View style={styles.section}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={[styles.heading, { alignSelf: "center" }]}>
+                        ONGOING EVENTS
+                      </Text>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                      <View style={styles.events}>
+                        {filterData(
+                          onGoingEvents,
+                          filterCategory,
+                          filterDay,
+                          filterVenue
+                        ).map((item, index) => (
+                          <Event
+                            key={index}
+                            id={item.id}
+                            url={item.image}
+                            event={item.name}
+                            description={item.description}
+                            venue={item.venue.name}
+                            latitude={item.venue.latitude}
+                            longitude={item.venue.longitude}
+                            startTime={item.startTime}
+                            endTime={item.endTime}
+                            tag="ongoing"
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+                )}
+
+                {upcommingEvents.length > 0 && (
+                  <View style={styles.section}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={styles.heading}>UPCOMING EVENTS</Text>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                      <View style={styles.events}>
+                        {filterData(
+                          upcommingEvents,
+                          filterCategory,
+                          filterDay,
+                          filterVenue
+                        ).map((item, index) => (
+                          <Event
+                            key={index}
+                            id={item.id}
+                            url={item.image}
+                            event={item.name}
+                            description={item.description}
+                            venue={item.venue.name}
+                            latitude={item.venue.latitude}
+                            longitude={item.venue.longitude}
+                            startTime={item.startTime}
+                            endTime={item.endTime}
+                            tag="upcoming"
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+                )}
+
+                {completedEvents.length > 0 && (
+                  <View style={styles.eventsCont}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={styles.heading}>COMPLETED EVENTS</Text>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                      <View style={styles.events}>
+                        {filterData(
+                          completedEvents,
+                          filterCategory,
+                          filterDay,
+                          filterVenue
+                        ).map((item, index) => (
+                          <Event
+                            key={index}
+                            id={item.id}
+                            url={item.image}
+                            event={item.name}
+                            description={item.description}
+                            venue={item.venue.name}
+                            latitude={item.venue.latitude}
+                            longitude={item.venue.longitude}
+                            startTime={item.startTime}
+                            endTime={item.endTime}
+                            tag="completed"
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+                )}
+
+                <View style={{ marginBottom: 100 }}></View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#121212',
   },
-  text: {
-    color: '#fff',
-    fontSize: 24,
+  scrollView: {
+    flex: 1,
+  },
+  headcont2: {
+    width: '69%',
+    flexDirection: "row",
+    marginVertical: 10,
+    marginLeft: -1,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "hsla(0, 0.00%, 100.00%, 0.1)",
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
+  },
+  daybutton: {
+    backgroundColor: "#382ad3",
+    color: "#ffffff",
+    width: 70,
+    marginHorizontal: 5,
+  },
+  daybuttonText: {
+    fontFamily: 'ProximaBold',
+    color: "#ffffff",
+  },
+  containerStyle: {
+    backgroundColor: "#BBD4E2",
+    width: "70%",
+    alignSelf: "center",
+    padding: 10,
+    borderRadius: 10,
+    maxHeight: Dimensions.get("window").width,
+  },
+  section: {
+    margin: 3,
+    paddingHorizontal: 10,
+  },
+  heading: {
+    fontFamily: "ProximaExtraBold",
+    fontSize: 20,
+    fontWeight: "normal",
+    letterSpacing: 0.8,
+    lineHeight: 24,
+    color: "#FFFFFF",
+    margin: 15,
+    marginBottom: 0,
+  },
+  highlightScroll: {
+    height: 200,
+  },
+  eventsCont: {
+    marginVertical: 10,
+    padding: 15,
+    backgroundColor: "hsla(0, 0.00%, 100.00%, 0.05)",
+    borderRadius: 25,
+    overflow: "hidden",
+    marginBottom: 80,
+  },
+  events: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingTop: 10,
+    justifyContent: "center",
+  },
+  itemList: {
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    alignItems: "center",
+    height: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+  },
+  accordion: {
+    backgroundColor: "#DCE9F0",
+  },
+  accordionTitle: {
+    fontSize: 16,
+    textTransform: "uppercase",
+    color: "#141415",
+  },
+  divider: {
+    height: 3,
+  },
+  modalFooter: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    paddingRight: 10,
+    paddingTop: 10,
+  },
+  itemText: {
+    fontSize: 14,
+    textTransform: "uppercase",
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    margin: 5,
+    padding: 5,
+    width: "30%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+    backgroundColor: "hsla(0, 0.00%, 100.00%, 0.07)",
+    aspectRatio: 2,
+  },
+  icon2: {
+    margin: 5,
+    padding: 5,
+    width: "30%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#382ad3",
+    borderRadius: 12,
+    aspectRatio: 2,
+  },
+  iconText: {
+    color: "#ffffff",
+    fontSize: 12,
+    marginTop: 2,
+    textAlign: "center",
+    fontFamily: "Proxima",
   },
 });

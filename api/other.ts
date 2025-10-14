@@ -1,109 +1,28 @@
-import { PRODUCTION_BASE_URL } from './base';
+import axios from 'axios';
 
-export const getContact = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/contact/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
-};
+const BASE_URL = 'https://apiserver.ecell.in/app25';
 
 export const getFaq = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/faq/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
+  const response = await axios.get(`${BASE_URL}/faq/`);
+  return response.data;
+};
+
+export const getContact = async () => {
+  const response = await axios.get(`${BASE_URL}/contact/`);
+  return response.data;
 };
 
 export const getSchedule = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/getother/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
+  const response = await axios.get(`${BASE_URL}/schedule/`);
+  return response.data;
 };
 
-export const getSponsors = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/sponsors/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
+export const deleteProfile = async (email: string) => {
+  const response = await axios.post(`${BASE_URL}/delete-profile/`, { email });
+  return response.data;
 };
 
 export const getVenues = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/venues/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
-};
-
-export const getInterests = async () => {
-  try {
-    const response = await fetch(`${PRODUCTION_BASE_URL}/getInterests/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    return {
-      success: false,
-      error: err,
-    };
-  }
+  const response = await axios.get(`${BASE_URL}/venue/`);
+  return response.data;
 };

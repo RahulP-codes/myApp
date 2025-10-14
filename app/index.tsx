@@ -15,7 +15,7 @@ export default function SplashScreen() {
 
   const checkAuth = async () => {
     const email = await AsyncStorage.getItem("Esummit24email");
-    
+  
     if (email !== null) {
       if (email === ADMIN_EMAIL) {
         setProfile({

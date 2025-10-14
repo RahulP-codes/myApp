@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { router } from 'expo-router';
 import { Button } from '.';
-import { useNavigation } from '@react-navigation/native';
 
 interface IInputBoxProps {
   label?: string;
@@ -18,7 +18,6 @@ interface IInputBoxProps {
 }
 
 export const InputBox = (props: IInputBoxProps) => {
-  const navigation = useNavigation();
   const [isValid, setIsValid] = useState(true);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -76,7 +75,7 @@ export const InputBox = (props: IInputBoxProps) => {
         }}>
         OR
       </Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+      <TouchableOpacity onPress={() => router.push('/register')}>
         <Text
           style={{
             fontFamily: 'Proxima',

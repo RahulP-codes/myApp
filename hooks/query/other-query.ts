@@ -1,61 +1,30 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  getContact,
-  getFaq,
-  getInterests,
-  getSchedule,
-  getSponsors,
-  getVenues,
-} from '../../api/other';
-import {
-  ESUMMIT_CONTACT,
-  ESUMMIT_FAQ,
-  ESUMMIT_INTERESTS,
-  ESUMMIT_SCHEDULE,
-  ESUMMIT_SPONSORS,
-  ESUMMIT_VENUES,
-} from '../../contants/query-keys';
-import {
-  IContactResponse,
-  IFaqResponse,
-  IInterestsData,
-  IScheduleResponse,
-  ISponsorsData,
-  IVenuesData,
-} from '../../types/api/others.types';
+import { getFaq, getContact, getSchedule, getVenues } from '../../api/other';
 
-export const useContact = () =>
-  useQuery<IContactResponse, Error, IContactResponse>({
-    queryKey: [ESUMMIT_CONTACT],
-    queryFn: () => getContact(),
+export const useFaq = () => {
+  return useQuery({
+    queryKey: ['faq'],
+    queryFn: getFaq,
   });
+};
 
-export const useFaq = () =>
-  useQuery<IFaqResponse, Error, IFaqResponse>({
-    queryKey: [ESUMMIT_FAQ],
-    queryFn: () => getFaq(),
+export const useContact = () => {
+  return useQuery({
+    queryKey: ['contact'],
+    queryFn: getContact,
   });
+};
 
-export const useSchedule = () =>
-  useQuery<IScheduleResponse, Error, IScheduleResponse>({
-    queryKey: [ESUMMIT_SCHEDULE],
-    queryFn: () => getSchedule(),
+export const useSchedule = () => {
+  return useQuery({
+    queryKey: ['schedule'],
+    queryFn: getSchedule,
   });
+};
 
-export const useSponsors = () =>
-  useQuery<ISponsorsData[], Error, ISponsorsData[]>({
-    queryKey: [ESUMMIT_SPONSORS],
-    queryFn: () => getSponsors(),
+export const useVenues = () => {
+  return useQuery({
+    queryKey: ['venues'],
+    queryFn: getVenues,
   });
-
-export const useVenues = () =>
-  useQuery<IVenuesData, Error, IVenuesData>({
-    queryKey: [ESUMMIT_VENUES],
-    queryFn: () => getVenues(),
-  });
-
-export const useInterests = () =>
-  useQuery<IInterestsData, Error, IInterestsData>({
-    queryKey: [ESUMMIT_INTERESTS],
-    queryFn: () => getInterests(),
-  });
+};

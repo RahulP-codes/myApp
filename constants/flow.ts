@@ -4,4 +4,3 @@ export const FLOW_STAGES = {
     MAIN: 'main',
     PROFILE: 'profile'
   };
-  

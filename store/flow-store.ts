@@ -1,5 +1,5 @@
 import { create, StateCreator } from 'zustand';
-import { FLOW_STAGES } from '../constants';
+import { FLOW_STAGES } from '../constants/flow';
 
 type ValueOf<T> = T[keyof T];
 

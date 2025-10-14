@@ -4,7 +4,7 @@ import {
   ESUMMIT_EVENTS,
   ESUMMIT_EVENT_NAME,
   ESUMMIT_VENUE_COORDINATES,
-} from '../../contants/query-keys';
+} from '../../constants/query-keys';
 import {
   IEventByIdResponse,
   IEventNameResponse,

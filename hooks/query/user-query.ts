@@ -19,7 +19,7 @@ import {
   ESUMMIT_GET_CONNECTS,
   ESUMMIT_GET_PROFILE,
   ESUMMIT_YOUR_CONNECTION
-} from '../../contants/query-keys';
+} from '../../constants/query-keys';
 import {
   ICheckAccomodationResponse,
   IGetTagsAndReminder,

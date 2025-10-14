@@ -8,10 +8,9 @@ import {
 } from 'react-native-confirmation-code-field';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
+import { router } from 'expo-router';
 import { Button } from '.';
-import { FLOW_STAGES } from '../../constants';
 import { useVerifyOtpMutation } from '../../hooks/mutation/user-action-mutation';
-import { useFlowStore } from '../../store/flow-store';
 import { useProfileStore } from '../../store/profile-store';
 
 interface OtpBoxProps {
@@ -31,7 +30,6 @@ export const OtpBox = (props: OtpBoxProps) => {
   const toast = useToast();
   const { mutateAsync: verifyOtpData } = useVerifyOtpMutation();
   const email = useProfileStore((state) => state.email);
-  const setFlow = useFlowStore((state) => state.setFlow);
 
   const [isValid, setValid] = useState(false);
   const [isButtonDisabled, setButtonDisabled] = useState(false);
@@ -75,8 +73,8 @@ export const OtpBox = (props: OtpBoxProps) => {
               isSignedIn: true,
               isGuest: true,
             });
-            setFlow(FLOW_STAGES.MAIN);
             toast.show('Signed In as a guest user!', { type: 'success' });
+            router.replace('/(tabs)');
           } else {
             let summitPassLevel;
             switch (res.data.user.summit_pass) {
@@ -115,11 +113,7 @@ export const OtpBox = (props: OtpBoxProps) => {
               toast.show('OTP verified successfully', { type: 'success' });
             }
 
-            if (res.profileBuilt) {
-              setFlow(FLOW_STAGES.MAIN);
-            } else {
-              setFlow(FLOW_STAGES.PROFILE);
-            }
+            router.replace('/(tabs)');
           }
         }
       });
