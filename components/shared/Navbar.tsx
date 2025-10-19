@@ -1,100 +1,89 @@
-import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router, usePathname } from 'expo-router';
-import CrossSvg from '../svgs/cross';
-import { useProfileStore } from '../../store/profile-store';
-import { getRelativeCoords } from 'react-native-reanimated';
+import React from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router, usePathname } from "expo-router";
+import CrossSvg from "../svgs/cross";
+import { useProfileStore } from "../../store/profile-store";
+import { getRelativeCoords } from "react-native-reanimated";
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const name = useProfileStore(state => state.name);
+  const name = useProfileStore((state) => state.name);
 
   const handleClick = () => {
-    if (pathname === '/profile') {
+    if (pathname === "/profile") {
       router.back();
     } else {
-      router.push('/profile');
+      router.push("/profile");
     }
   };
 
   return (
-    <SafeAreaView edges={['top']} style={{ backgroundColor: '#000000' }}>
-      <ImageBackground
-        source={require('../../assets/images/building.png')}
-        style={styles.backgroundImage}
-        imageStyle={styles.backgroundImageStyle}
-      >
-        <View style={styles.header}>
-          <View style={styles.headcont}>
-            <TouchableOpacity onPress={handleClick}>
-              {pathname === '/profile' ? (
-                <View style={{ width: 40 }}>
-                  <CrossSvg />
-                </View>
-              ) : (
-                <View style={styles.profileIcon}>
-                  <TouchableOpacity onPress={() => router.push('/profile')}>
-                    <Text style={styles.profileiconText}>{name?.[0] || 'U'}</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </TouchableOpacity>
-            <View style={styles.innerheadcont}>
-              <Image
-                source={require('../../assets/images/esummitlogo.png')}
-                style={[{ width: 150, height: 45 }]}
-                resizeMode="cover"
-              />
+    <SafeAreaView edges={['top']} style={{ backgroundColor: "#000000ff" }}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleClick}>
+          {pathname === "/profile" ? (
+            <View style={{ width: 40 }}>
+              <CrossSvg />
             </View>
-          </View>
+          ) : (
+            <View style={styles.profileIcon}>
+              <TouchableOpacity onPress={() => router.push("/profile")}>
+                <Text style={styles.profileiconText}>{name?.[0] || "U"}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
+        <View style={styles.innerheadcont}>
+          <Image
+            source={require("../../assets/images/esummitLogo.png")}
+            style={[{ width: 150, height: 45 }]}
+            resizeMode="contain"
+          />
         </View>
-      </ImageBackground>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    width: '100%',
-  },
-  backgroundImageStyle: {
-    top: 50,
-  },
   header: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingVertical: 10,
     paddingBottom: 25,
-    width: '100%'
-  },
-  headcont: {
-    flexDirection: 'row',
+    width: "100%",
     paddingHorizontal: 20,
     // backgroundColor: "#05020E",
-    width: '100%',
     // justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: "center",
   },
   innerheadcont: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     paddingHorizontal: 40,
     // backgroundColor: "#05020E",
-    width: '100%',
+    width: "100%",
     marginRight: 10,
   },
   profileIcon: {
     borderRadius: 50,
-    backgroundColor: '#7C3AED',
+    backgroundColor: "#FFE600",
     width: 40,
     aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileiconText: {
-    fontFamily: 'ProximaBold',
-    textTransform: 'uppercase',
-    color: '#fff',
+    fontFamily: "ProximaBold",
+    textTransform: "uppercase",
+    color: "#000000ff",
     fontSize: 16,
   },
 });

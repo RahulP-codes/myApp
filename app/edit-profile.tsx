@@ -29,7 +29,7 @@ export default function EditProfileScreen() {
               <Icon name="close" size={30} color="#FFF" />
             </TouchableOpacity>
             <View style={styles.innerheadcont}>
-              <Image source={require('../assets/images/esummitlogo.png')} style={{ width: 150, height: 45 }} resizeMode="cover" />
+              <Image source={require('../assets/images/esummitLogo.png')} style={{ width: 150, height: 45 }} resizeMode="contain" />
             </View>
           </View>
         </View>

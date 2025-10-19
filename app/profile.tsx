@@ -38,7 +38,7 @@ export default function ProfileScreen() {
           <TouchableOpacity onPress={() => router.back()}>
             <Icon name="close" size={30} color="#FFF" />
           </TouchableOpacity>
-          <Image source={require('../assets/images/esummitlogo.png')} style={styles.logo} resizeMode="cover" />
+          <Image source={require('../assets/images/esummitLogo.png')} style={styles.logo} resizeMode="contain" />
         </View>
         <Portal>
           <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.containerStyle}>
