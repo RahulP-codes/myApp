@@ -27,22 +27,18 @@ interface IHighlightBoxProps {
 
 export const HighlightBox = (props: IHighlightBoxProps) => {
   const ImageComponent = useMemo(() => {
-    return (
-      <>
-        {props.url === null || props.url === undefined ? (
-          <Image
-            source={require('../../assets/images/profile.png')}
-            resizeMode={'cover'}
-            style={styles.image}
-          />
-        ) : (
-          <Image
-            source={{ uri: props.url }}
-            resizeMode={'cover'}
-            style={styles.image}
-          />
-        )}
-      </>
+    return props.url === null || props.url === undefined ? (
+      <Image
+        source={require('../../assets/images/profile.png')}
+        resizeMode={'cover'}
+        style={styles.image}
+      />
+    ) : (
+      <Image
+        source={{ uri: props.url }}
+        resizeMode={'cover'}
+        style={styles.image}
+      />
     );
   }, [props.url]);
 

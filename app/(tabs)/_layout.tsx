@@ -3,7 +3,7 @@ import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Navbar } from "../../components/shared/Navbar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { Shadow } from "react-native-shadow-2";
+
 
 const getIconStyle = (focused: boolean) => ({
   width: 30,
@@ -17,13 +17,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 
   return (
     <View style={[styles.tabBarContainer, { bottom: insets.bottom + 10 }]}>
-      <Shadow
-        distance={30}
-        startColor={"#5647f53c"}
-        offset={[0, 0]}
-        paintInside={false}
-        style={{ width: "100%" }}
-      >
+      <View style={styles.shadowWrapper}>
         <LinearGradient
           colors={["#24347F", "#4A4C8B"]}
           style={styles.borderContainer}
@@ -59,7 +53,11 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                     <Text
                       style={[
                         styles.tabLabel,
-                        { color: isFocused ? "#0d0d0dff" : "hsla(0, 0%, 0%, 0.6)" },
+                        {
+                          color: isFocused
+                            ? "#0d0d0dff"
+                            : "hsla(0, 0%, 0%, 0.6)",
+                        },
                       ]}
                     >
                       {options.title}
@@ -70,7 +68,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             </View>
           </LinearGradient>
         </LinearGradient>
-      </Shadow>
+      </View>
     </View>
   );
 }
@@ -142,6 +140,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: "2%",
     right: "2%",
+    zIndex: 1000,
+  },
+  shadowWrapper: {
+    shadowColor: "#5647f5",
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 1,
+    shadowRadius: 20,
+    elevation: 30,
+    borderRadius: 50,
   },
   borderContainer: {
     padding: 2,
