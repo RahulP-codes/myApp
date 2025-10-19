@@ -3,6 +3,7 @@ import { ActivityIndicator, ImageBackground, RefreshControl, ScrollView, StyleSh
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Location } from '../../components/map';
 import { useVenues } from '../../hooks/query/other-query';
+import { IEventData } from '@/types/api/events.types';
 
 export default function MapsScreen() {
   const { data: Venues, isLoading, refetch } = useVenues();
@@ -21,7 +22,7 @@ export default function MapsScreen() {
             <View style={{ marginBottom: 80 }}>
               <Text style={styles.title}>VENUES</Text>
               <View style={styles.content}>
-                {venuedata?.map((item, index) => (
+                {venuedata?.map((item:IEventData, index:number) => (
                   <View key={index}>
                     <Location name={item.name} image={item.image} latitude={item.latitude} longitude={item.longitude} />
                   </View>

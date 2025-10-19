@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Linking,
 } from "react-native";
+import { Shadow } from "react-native-shadow-2";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
@@ -27,6 +28,7 @@ import { useEvent } from "../../hooks/query/events-query";
 import { useEventStore } from "../../store/events-store";
 import { filterData } from "../../utils/helper";
 import { useProfileStore } from "../../store/profile-store";
+import { IEventData } from "@/types/api/events.types";
 
 export default function HomeScreen() {
   const { data: EventData, isLoading, refetch } = useEvent();
@@ -52,7 +54,7 @@ export default function HomeScreen() {
   const setUpcommingEvents = useEventStore((state) => state.setUpcoming);
   const setCompletedEvents = useEventStore((state) => state.setCompleted);
 
-  const togglefilter = (filtername) => {
+  const togglefilter = (filtername: string) => {
     if (filterCategory === filtername) {
       setFilterCategory("");
     } else {
@@ -104,15 +106,9 @@ export default function HomeScreen() {
     setFilterVenue("");
   };
 
-
-
   return (
-    <ImageBackground
-      source={require('../../assets/images/homeBg.png')}
-      style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
-      <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <View style={styles.backgroundContainer}>
         <View style={styles.container}>
           <Portal>
             <Modal
@@ -225,7 +221,11 @@ export default function HomeScreen() {
                     <View
                       style={[
                         styles.section,
-                        { backgroundColor: "red", padding: 25, paddingBottom: 7 },
+                        {
+                          backgroundColor: "red",
+                          padding: 25,
+                          paddingBottom: 7,
+                        },
                       ]}
                     >
                       <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
@@ -251,7 +251,10 @@ export default function HomeScreen() {
 
                   <ScrollView horizontal style={styles.highlightScroll}>
                     {EventData?.data?.highlights.map((item, index) => (
-                      <View key={index} style={{ width: Dimensions.get('window').width - 40 }}>
+                      <View
+                        key={index}
+                        style={{ width: Dimensions.get("window").width - 40 }}
+                      >
                         <Highlight
                           url={item.image}
                           alt={item.name}
@@ -265,6 +268,14 @@ export default function HomeScreen() {
                             new Date(item.startTime) < new Date() &&
                             new Date(item.endTime) > new Date()
                           }
+                          navigation={{
+                            navigate: (screen: string, params: any) =>
+                              router.push(
+                                `/${screen.toLowerCase()}?id=${
+                                  params.id
+                                }` as any
+                              ),
+                          }}
                         />
                       </View>
                     ))}
@@ -277,7 +288,9 @@ export default function HomeScreen() {
                       styles.daybutton,
                       {
                         backgroundColor:
-                          filterDay.length === 2 ? "#382ad3" : "hsla(0, 0.00%, 100.00%, 0.05)",
+                          filterDay.length === 2
+                            ? "#382ad3"
+                            : "hsla(0, 0.00%, 100.00%, 0.05)",
                       },
                     ]}
                     onPress={() => setFilterDay(["1", "2"])}
@@ -391,7 +404,7 @@ export default function HomeScreen() {
                           filterCategory,
                           filterDay,
                           filterVenue
-                        ).map((item, index) => (
+                        ).map((item: IEventData, index: number) => (
                           <Event
                             key={index}
                             id={item.id}
@@ -401,9 +414,25 @@ export default function HomeScreen() {
                             venue={item.venue.name}
                             latitude={item.venue.latitude}
                             longitude={item.venue.longitude}
-                            startTime={item.startTime}
-                            endTime={item.endTime}
+                            startTime={
+                              typeof item.startTime === "string"
+                                ? new Date(item.startTime)
+                                : item.startTime
+                            }
+                            endTime={
+                              typeof item.endTime === "string"
+                                ? new Date(item.endTime)
+                                : item.endTime
+                            }
                             tag="ongoing"
+                            navigation={{
+                              navigate: (screen: string, params: any) =>
+                                router.push(
+                                  `/${screen.toLowerCase()}?id=${
+                                    params.id
+                                  }` as any
+                                ),
+                            }}
                           />
                         ))}
                       </View>
@@ -429,7 +458,7 @@ export default function HomeScreen() {
                           filterCategory,
                           filterDay,
                           filterVenue
-                        ).map((item, index) => (
+                        ).map((item: IEventData, index: number) => (
                           <Event
                             key={index}
                             id={item.id}
@@ -439,9 +468,25 @@ export default function HomeScreen() {
                             venue={item.venue.name}
                             latitude={item.venue.latitude}
                             longitude={item.venue.longitude}
-                            startTime={item.startTime}
-                            endTime={item.endTime}
-                            tag="upcoming"
+                            startTime={
+                              typeof item.startTime === "string"
+                                ? new Date(item.startTime)
+                                : item.startTime
+                            }
+                            endTime={
+                              typeof item.endTime === "string"
+                                ? new Date(item.endTime)
+                                : item.endTime
+                            }
+                            tag="ongoing"
+                            navigation={{
+                              navigate: (screen: string, params: any) =>
+                                router.push(
+                                  `/${screen.toLowerCase()}?id=${
+                                    params.id
+                                  }` as any
+                                ),
+                            }}
                           />
                         ))}
                       </View>
@@ -467,7 +512,7 @@ export default function HomeScreen() {
                           filterCategory,
                           filterDay,
                           filterVenue
-                        ).map((item, index) => (
+                        ).map((item: IEventData, index: number) => (
                           <Event
                             key={index}
                             id={item.id}
@@ -477,35 +522,57 @@ export default function HomeScreen() {
                             venue={item.venue.name}
                             latitude={item.venue.latitude}
                             longitude={item.venue.longitude}
-                            startTime={item.startTime}
-                            endTime={item.endTime}
-                            tag="completed"
+                            startTime={
+                              typeof item.startTime === "string"
+                                ? new Date(item.startTime)
+                                : item.startTime
+                            }
+                            endTime={
+                              typeof item.endTime === "string"
+                                ? new Date(item.endTime)
+                                : item.endTime
+                            }
+                            tag="ongoing"
+                            navigation={{
+                              navigate: (screen: string, params: any) =>
+                                router.push(
+                                  `/${screen.toLowerCase()}?id=${
+                                    params.id
+                                  }` as any
+                                ),
+                            }}
                           />
                         ))}
                       </View>
                     </View>
                   </View>
                 )}
-
                 <View style={{ marginBottom: 100 }}></View>
               </>
             )}
           </ScrollView>
         </View>
-      </SafeAreaView>
-    </ImageBackground>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundContainer: {
+    flex: 1,
+    backgroundColor: "#1a1a2e",
+  },
+
   container: {
     flex: 1,
   },
+
   scrollView: {
     flex: 1,
   },
+
   headcont2: {
-    width: '69%',
+    width: "69%",
     flexDirection: "row",
     marginVertical: 10,
     marginLeft: -1,
@@ -523,7 +590,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   daybuttonText: {
-    fontFamily: 'ProximaBold',
+    fontFamily: "ProximaBold",
     color: "#ffffff",
   },
   containerStyle: {

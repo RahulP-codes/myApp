@@ -1,44 +1,97 @@
-import { Tabs } from 'expo-router';
-import { Image, Platform } from 'react-native';
-import { Navbar } from '../../components/shared/Navbar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Tabs } from "expo-router";
+import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Navbar } from "../../components/shared/Navbar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { Shadow } from "react-native-shadow-2";
+
+const getIconStyle = (focused: boolean) => ({
+  width: 30,
+  height: 30,
+  tintColor: "#000000ff",
+  opacity: focused ? 1 : 0.5,
+});
+
+function CustomTabBar({ state, descriptors, navigation }: any) {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.tabBarContainer, { bottom: insets.bottom + 10 }]}>
+      <Shadow
+        distance={30}
+        startColor={"#5647f53c"}
+        offset={[0, 0]}
+        paintInside={false}
+        style={{ width: "100%" }}
+      >
+        <LinearGradient
+          colors={["#24347F", "#4A4C8B"]}
+          style={styles.borderContainer}
+        >
+          <LinearGradient
+            colors={["#B6A400", "#998A00"]}
+            style={styles.mainGradient}
+          >
+            <View style={styles.tabsWrapper}>
+              {state.routes.map((route: any, index: number) => {
+                const { options } = descriptors[route.key];
+                const isFocused = state.index === index;
+
+                const onPress = () => {
+                  const event = navigation.emit({
+                    type: "tabPress",
+                    target: route.key,
+                    canPreventDefault: true,
+                  });
+
+                  if (!isFocused && !event.defaultPrevented) {
+                    navigation.navigate(route.name);
+                  }
+                };
+
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.tabItem}
+                    onPress={onPress}
+                  >
+                    {options.tabBarIcon({ focused: isFocused })}
+                    <Text
+                      style={[
+                        styles.tabLabel,
+                        { color: isFocused ? "#0d0d0dff" : "hsla(0, 0%, 0%, 0.6)" },
+                      ]}
+                    >
+                      {options.title}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </LinearGradient>
+        </LinearGradient>
+      </Shadow>
+    </View>
+  );
+}
 
 export default function TabLayout() {
-  const insets = useSafeAreaInsets();
-  
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: '#FFFFFF',
-        tabBarInactiveTintColor: '#9D9D9D',
         headerShown: true,
         header: () => <Navbar />,
-        tabBarStyle: {
-          backgroundColor: '#382ad5',
-          borderTopWidth: 0,
-          height: 80,
-          paddingBottom: 8,
-          paddingTop: 8,
-          paddingHorizontal: 20,
-          position: 'absolute',
-          bottom: insets.bottom,
-          margin :'2%',
-          borderRadius: 50,
-        },
-        tabBarLabelStyle: {
-          fontFamily: 'Proxima',
-          fontSize: 12,
-        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require('../../assets/images/homeicon.png')}
-              style={{ width: 30, height: 30, opacity: focused ? 1 : 0.5 }}
+              source={require("../../assets/images/homeicon.png")}
+              style={getIconStyle(focused)}
             />
           ),
         }}
@@ -46,12 +99,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="network"
         options={{
-          title: 'Network',
+          title: "Network",
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require('../../assets/images/networkicon.png')}
-              style={{ width: 30, height: 30, opacity: focused ? 1 : 0.5 }}
+              source={require("../../assets/images/networkicon.png")}
+              style={getIconStyle(focused)}
             />
           ),
         }}
@@ -59,11 +112,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="maps"
         options={{
-          title: 'Maps',
+          title: "Maps",
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require('../../assets/images/mapicon.png')}
-              style={{ width: 30, height: 30, opacity: focused ? 1 : 0.5 }}
+              source={require("../../assets/images/mapicon.png")}
+              style={getIconStyle(focused)}
             />
           ),
         }}
@@ -71,11 +124,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="more"
         options={{
-          title: 'More',
+          title: "More",
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require('../../assets/images/moreicon.png')}
-              style={{ width: 28, height: 28, opacity: focused ? 1 : 0.5 }}
+              source={require("../../assets/images/moreicon.png")}
+              style={getIconStyle(focused)}
             />
           ),
         }}
@@ -83,3 +136,37 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    position: "absolute",
+    left: "2%",
+    right: "2%",
+  },
+  borderContainer: {
+    padding: 2,
+    borderRadius: 50,
+  },
+  mainGradient: {
+    borderRadius: 49,
+    height: 80,
+    paddingBottom: 10,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+  },
+  tabsWrapper: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  tabItem: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tabLabel: {
+    marginTop: 5,
+    fontFamily: "Proxima",
+    fontSize: 13,
+  },
+});
