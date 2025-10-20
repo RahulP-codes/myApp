@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Navbar } from "../../components/shared/Navbar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 
@@ -13,10 +12,9 @@ const getIconStyle = (focused: boolean) => ({
 });
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
-  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.tabBarContainer, { bottom: insets.bottom + 10 }]}>
+    <View style={[styles.tabBarContainer, { bottom: 10 }]}>
       <View style={styles.shadowWrapper}>
         <LinearGradient
           colors={["#24347F", "#4A4C8B"]}
@@ -79,6 +77,7 @@ export default function TabLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: true,
+        headerTransparent: true,
         header: () => <Navbar />,
       }}
     >

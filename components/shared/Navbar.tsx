@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
 import CrossSvg from "../svgs/cross";
@@ -26,30 +27,33 @@ export const Navbar = () => {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={{ backgroundColor: "#000000ff" }}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleClick}>
-          {pathname === "/profile" ? (
-            <View style={{ width: 40 }}>
-              <CrossSvg />
-            </View>
-          ) : (
-            <View style={styles.profileIcon}>
-              <TouchableOpacity onPress={() => router.push("/profile")}>
-                <Text style={styles.profileiconText}>{name?.[0] || "U"}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
-        <View style={styles.innerheadcont}>
-          <Image
-            source={require("../../assets/images/esummitLogo.png")}
-            style={[{ width: 150, height: 45 }]}
-            resizeMode="contain"
-          />
+    <>
+      <StatusBar style="auto" backgroundColor="#000000" />
+      <SafeAreaView edges={["top"]} style={{ backgroundColor: "transparent" }}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleClick}>
+            {pathname === "/profile" ? (
+              <View style={{ width: 40 }}>
+                <CrossSvg />
+              </View>
+            ) : (
+              <View style={styles.profileIcon}>
+                <TouchableOpacity onPress={() => router.push("/profile")}>
+                  <Text style={styles.profileiconText}>{name?.[0] || "U"}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </TouchableOpacity>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/images/esummitLogo.png")}
+              style={[{ width: 150, height: 45 }]}
+              resizeMode="contain"
+            />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -60,15 +64,13 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     width: "100%",
     paddingHorizontal: 20,
-    // backgroundColor: "#05020E",
-    // justifyContent: 'center',
+    backgroundColor: "transparent",
     alignItems: "center",
   },
-  innerheadcont: {
+  logoContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 40,
-    // backgroundColor: "#05020E",
     width: "100%",
     marginRight: 10,
   },

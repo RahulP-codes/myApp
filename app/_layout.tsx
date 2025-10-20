@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
@@ -31,8 +32,7 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000000' }}>
-      <StatusBar style="light" backgroundColor="#000000" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#000000ff' }}>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
           <ToastProvider
@@ -41,7 +41,6 @@ export default function RootLayout() {
             animationType="slide-in"
             successColor="#00812F"
             dangerColor="#D10000"
-            offset={50}
           >
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" />
@@ -51,6 +50,6 @@ export default function RootLayout() {
           </ToastProvider>
         </PaperProvider>
       </QueryClientProvider>
-    </View>
+    </SafeAreaView>
   );
 }
