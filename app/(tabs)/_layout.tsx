@@ -3,7 +3,6 @@ import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Navbar } from "../../components/shared/Navbar";
 import { LinearGradient } from "expo-linear-gradient";
 
-
 const getIconStyle = (focused: boolean) => ({
   width: 30,
   height: 30,
@@ -12,9 +11,8 @@ const getIconStyle = (focused: boolean) => ({
 });
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
-
   return (
-    <View style={[styles.tabBarContainer, { bottom: 10 }]}>
+    <View style={[styles.tabBarContainer]}>
       <View style={styles.shadowWrapper}>
         <LinearGradient
           colors={["#24347F", "#4A4C8B"]}
@@ -77,7 +75,6 @@ export default function TabLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: true,
-        headerTransparent: true,
         header: () => <Navbar />,
       }}
     >
@@ -137,17 +134,19 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   tabBarContainer: {
     position: "absolute",
-    left: "2%",
-    right: "2%",
-    zIndex: 1000,
+    width: "94%",
+    bottom: '1.5%',
+    left: '3%',
+    right: '3%',
   },
   shadowWrapper: {
     shadowColor: "#5647f5",
-    shadowOffset: { width: 0, height: -5 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 20,
     elevation: 30,
     borderRadius: 50,
+    position: "relative",
   },
   borderContainer: {
     padding: 2,

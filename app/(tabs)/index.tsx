@@ -107,7 +107,6 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.backgroundContainer}>
         <View style={styles.container}>
           <Portal>
@@ -553,7 +552,6 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
       </View>
-    </SafeAreaView>
   );
 }
 

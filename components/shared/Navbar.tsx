@@ -7,12 +7,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
 import CrossSvg from "../svgs/cross";
 import { useProfileStore } from "../../store/profile-store";
-import { getRelativeCoords } from "react-native-reanimated";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -27,33 +24,28 @@ export const Navbar = () => {
   };
 
   return (
-    <>
-      <StatusBar style="auto" backgroundColor="#000000" />
-      <SafeAreaView edges={["top"]} style={{ backgroundColor: "transparent" }}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleClick}>
-            {pathname === "/profile" ? (
-              <View style={{ width: 40 }}>
-                <CrossSvg />
-              </View>
-            ) : (
-              <View style={styles.profileIcon}>
-                <TouchableOpacity onPress={() => router.push("/profile")}>
-                  <Text style={styles.profileiconText}>{name?.[0] || "U"}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </TouchableOpacity>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("../../assets/images/esummitLogo.png")}
-              style={[{ width: 150, height: 45 }]}
-              resizeMode="contain"
-            />
+    <View style={styles.header}>
+      <TouchableOpacity onPress={handleClick}>
+        {pathname === "/profile" ? (
+          <View style={{ width: 40 }}>
+            <CrossSvg />
           </View>
-        </View>
-      </SafeAreaView>
-    </>
+        ) : (
+          <View style={styles.profileIcon}>
+            <TouchableOpacity onPress={() => router.push("/profile")}>
+              <Text style={styles.profileiconText}>{name?.[0] || "U"}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </TouchableOpacity>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("../../assets/images/esummitLogo.png")}
+          style={[{ width: 150, height: 45 }]}
+          resizeMode="contain"
+        />
+      </View>
+    </View>
   );
 };
 
@@ -64,8 +56,8 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     width: "100%",
     paddingHorizontal: 20,
-    backgroundColor: "transparent",
     alignItems: "center",
+    backgroundColor: 'black'
   },
   logoContainer: {
     flexDirection: "row",
