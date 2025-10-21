@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 20,
     alignItems: "center",
-    backgroundColor: 'black'
+    // backgroundColor: 'black'
+    backgroundColor: 'transparent'
   },
   logoContainer: {
     flexDirection: "row",

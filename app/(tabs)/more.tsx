@@ -50,12 +50,8 @@ export default function MoreScreen() {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/moreBg.png")}
-      style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
-      <SafeAreaView edges={["bottom"]} style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
         <ScrollView>
           <Portal>
             <Modal
@@ -150,13 +146,14 @@ export default function MoreScreen() {
           <Follow />
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
     padding: 20,
   },
   content1: {},

@@ -13,8 +13,8 @@ export default function MapsScreen() {
   console.log('venuedata:', venuedata);
 
   return (
-    <ImageBackground source={require('../../assets/images/mapsBg.png')} style={StyleSheet.absoluteFill} resizeMode="cover">
-      <SafeAreaView edges={['bottom']} style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
         <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}>
           {isLoading ? (
             <ActivityIndicator animating={true} color="#4E8FB4" size="large" style={{ marginTop: 20 }} />
@@ -32,13 +32,14 @@ export default function MapsScreen() {
           )}
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   title: {
     fontFamily: 'ProximaExtraBold',

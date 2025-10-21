@@ -205,7 +205,7 @@ export default function HomeScreen() {
             {isLoading ? (
               <ActivityIndicator
                 animating={true}
-                color="#5443ab"
+                color="#808f0dff"
                 size="large"
                 style={{ marginTop: 20 }}
               />
@@ -557,13 +557,14 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   backgroundContainer: {
+    // display: 'none',
     flex: 1,
-    backgroundColor: "#000000ff",
+    backgroundColor: "transparent",
   },
 
   container: {
     flex: 1,
-    backgroundColor: '#be4949ff'
+    backgroundColor: 'transparent'
   },
 
   scrollView: {
@@ -601,6 +602,7 @@ const styles = StyleSheet.create({
     maxHeight: Dimensions.get("window").width,
   },
   section: {
+    backgroundColor: 'transparent',
     margin: 3,
     paddingHorizontal: 10,
   },

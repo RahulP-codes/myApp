@@ -57,7 +57,7 @@ export default function NetworkScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',
