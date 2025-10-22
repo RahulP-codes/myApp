@@ -1,20 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
-import { Image, ImageBackground, Linking, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { Button, List, Modal, Portal } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, ImageBackground, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, List } from 'react-native-paper';
 import { router } from 'expo-router';
-import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ProfileSection } from '../components/profile';
 import { useProfileStore } from '../store/profile-store';
 import { useFlowStore } from '../store/flow-store';
 import { FLOW_STAGES } from '../constants/flow';
+import { EntryQR } from '../components/shared/showEntryQR';
 
 export default function ProfileScreen() {
-  const [visible, setVisible] = useState(false);
 
-  const hideModal = () => setVisible(false);
 
   const name = useProfileStore(state => state.name);
   const email = useProfileStore(state => state.email);
@@ -32,7 +29,6 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: '#000000' }}>
       <ImageBackground source={require('../assets/images/profileBg.png')} style={styles.container} resizeMode="cover">
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -40,29 +36,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
           <Image source={require('../assets/images/esummitLogo.png')} style={styles.logo} resizeMode="contain" />
         </View>
-        <Portal>
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.containerStyle}>
-            <View>
-              <TouchableOpacity style={{ alignItems: 'flex-end', paddingRight: 10, paddingVertical: 5 }} onPress={hideModal}>
-                <Text style={{ color: '#fff' }}>X</Text>
-              </TouchableOpacity>
-              {qrcode ? (
-                <>
-                  <ActivityIndicator animating={true} color="#4E8FB4" size="large" style={{ marginTop: 20 }} />
-                  <Image source={{ uri: qrcode }} style={styles.qrImage} />
-                </>
-              ) : (
-                <>
-                  <ActivityIndicator animating={true} color="#4E8FB4" size="large" style={{ marginTop: 20 }} />
-                  <View style={{ backgroundColor: 'white', alignItems: 'center', marginHorizontal: 25, paddingVertical: 30, marginTop: 10 }}>
-                    <QRCode value={email} size={150} />
-                  </View>
-                </>
-              )}
-              <Text style={styles.qrText}>Scan this QR code at the registration desk to get your pass.</Text>
-            </View>
-          </Modal>
-        </Portal>
+
 
         <ProfileSection name={name} email={email} image={image as string} />
 
@@ -106,19 +80,18 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity onPress={() => setVisible(true)}>
+        <EntryQR email={email} qrcode={qrcode} variant="profile">
           <View style={styles.section}>
             <Text style={styles.text}>Show QR Code </Text>
             <Icon name="qr-code" size={24} style={{ paddingRight: 10 }} color="#FFF" />
           </View>
-        </TouchableOpacity>
+        </EntryQR>
 
         <Button onPress={handleLogout} mode="outlined" textColor="#000000" style={styles.logout}>
           <Image source={require('../assets/images/logout.png')} style={styles.icon} />
           <Text style={styles.boldSmallText}> Logout</Text>
         </Button>
       </ImageBackground>
-    </SafeAreaView>
   );
 }
 
@@ -206,25 +179,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 1,
   },
-  containerStyle: {
-    backgroundColor: '#000000',
-    width: 300,
-    alignSelf: 'center',
-    padding: 10,
-    borderRadius: 10,
-  },
-  qrImage: {
-    width: 200,
-    height: 200,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  qrText: {
-    fontSize: 18,
-    fontFamily: 'Proxima',
-    lineHeight: 22,
-    color: '#FFFFFF',
-    padding: 10,
-    textAlign: 'center',
-  },
+
+
 });

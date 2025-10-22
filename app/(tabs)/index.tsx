@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import PagerView from "react-native-pager-view";
 import {
   View,
@@ -11,7 +12,7 @@ import {
   Linking,
 } from "react-native";
 import { Shadow } from "react-native-shadow-2";
-import { ScrollView } from "react-native";
+import { Image, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
 import { Platform } from "react-native";
@@ -20,8 +21,6 @@ import {
   Button,
   Divider,
   List,
-  Modal,
-  Portal,
   RadioButton,
 } from "react-native-paper";
 import { Event, Highlight } from "../../components/home";
@@ -30,15 +29,16 @@ import { useEventStore } from "../../store/events-store";
 import { filterData } from "../../utils/helper";
 import { useProfileStore } from "../../store/profile-store";
 import { IEventData } from "@/types/api/events.types";
+import { EntryQR } from "../../components/shared/showEntryQR";
 
 export default function HomeScreen() {
   const { data: EventData, isLoading, refetch } = useEvent();
   const name = useProfileStore((state) => state.name);
+  const email = useProfileStore((state) => state.email);
   const isguest = useProfileStore((state) => state.isGuest);
+  const qrcode = useProfileStore((state) => state.qrcode);
 
-  const [visible, setVisible] = useState(false);
-  const hideModal = () => setVisible(false);
-  const showModal = () => setVisible(true);
+
 
   const [categories, setCategories] = useState<string[]>([]);
   const [days, setDays] = useState<string[]>([]);
@@ -125,91 +125,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={styles.containerStyle}
-        >
-          <ScrollView>
-            <List.Accordion
-              title="Categories"
-              style={styles.accordion}
-              titleStyle={styles.accordionTitle}
-            >
-              <View>
-                <RadioButton.Group
-                  onValueChange={(newValue) => setFilterCategory(newValue)}
-                  value={filterCategory}
-                >
-                  {categories.map((item, index) => {
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        onPress={() => {
-                          if (filterCategory === item) {
-                            setFilterCategory("");
-                          } else {
-                            setFilterCategory(item);
-                          }
-                        }}
-                      >
-                        <View style={styles.itemList}>
-                          <RadioButton value={item} />
-                          <Text style={styles.itemText}>{item}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </RadioButton.Group>
-              </View>
-            </List.Accordion>
 
-            <Divider style={styles.divider} />
-
-            <List.Accordion
-              title="Venue"
-              style={styles.accordion}
-              titleStyle={styles.accordionTitle}
-            >
-              <View>
-                <RadioButton.Group
-                  onValueChange={(newValue) => setFilterVenue(newValue)}
-                  value={filterVenue}
-                >
-                  {venues.map((item, index) => {
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        onPress={() => {
-                          if (filterVenue === item) {
-                            setFilterVenue("");
-                          } else {
-                            setFilterVenue(item);
-                          }
-                        }}
-                      >
-                        <View style={styles.itemList}>
-                          <RadioButton value={item} />
-                          <Text style={styles.itemText}>{item}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </RadioButton.Group>
-              </View>
-            </List.Accordion>
-          </ScrollView>
-          <View style={styles.modalFooter}>
-            <Button mode="contained" onPress={handleResetModal}>
-              Reset
-            </Button>
-            <Button mode="contained" onPress={hideModal}>
-              Done
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
 
       <ScrollView
         style={styles.scrollView}
@@ -630,6 +546,41 @@ export default function HomeScreen() {
           </>
         )}
       </ScrollView>
+
+      <View style={styles.getEntryContainer}>
+        <View style={{ width: "100%", alignItems: "center" }}>
+          <EntryQR email={email} qrcode={qrcode} variant="home">
+            <View
+              style={{
+                backgroundColor: "#05020E",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row",
+                borderWidth: 2,
+                borderColor: "#E5BE52",
+                borderRadius: 20,
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
+            >
+              <Ionicons
+                name="qr-code"
+                size={20}
+                style={{ paddingHorizontal: 5 }}
+                color="#E5BE52"
+              />
+              <Text
+                style={{
+                  color: "#E5BE52",
+                  fontFamily: "ProximaBold",
+                }}
+              >
+                Get Entry
+              </Text>
+            </View>
+          </EntryQR>
+        </View>
+      </View>
     </View>
   );
 }
@@ -665,14 +616,7 @@ const styles = StyleSheet.create({
   daybuttonText: {
     fontFamily: "ProximaBold",
   },
-  containerStyle: {
-    backgroundColor: "#BBD4E2",
-    width: "70%",
-    alignSelf: "center",
-    padding: 10,
-    borderRadius: 10,
-    maxHeight: Dimensions.get("window").width,
-  },
+
   section: {
     // backgroundColor: "transparent",
     marginVertical: 3,
@@ -778,4 +722,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Proxima",
   },
+  getEntryContainer: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255,0)",
+    position: "absolute",
+    bottom: 105,
+    zIndex: 200,
+  },
+
 });
