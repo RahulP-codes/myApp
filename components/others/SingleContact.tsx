@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
-    backgroundColor: '#413000',
+    backgroundColor: '#D8C40199',
   },
   iconCircle: {
-    backgroundColor: '#413000',
+    backgroundColor: '#D8C40199',
     borderRadius: 20,
     width: 40,
     height: 40,

@@ -50,99 +50,99 @@ export default function MoreScreen() {
 
   return (
     <View style={styles.container}>
-        <ScrollView>
-          <Portal>
-            <Modal
-              visible={visible}
-              onDismiss={hideModal}
-              contentContainerStyle={styles.containerStyle}
-            >
-              <TouchableOpacity
-                style={{ alignItems: "flex-end", marginVertical: 15 }}
-                onPress={hideModal}
-              >
-                <Text style={{ color: "#fff" }}>X</Text>
-              </TouchableOpacity>
-            </Modal>
-            <Modal
-              visible={deleteVisible}
-              onDismiss={hideDeleteModal}
-              contentContainerStyle={styles.deleteContainerStyle}
-            >
-              <Text style={styles.modalTitle}>Delete Account</Text>
-              <Text style={styles.modalMessage}>
-                This action will delete your account, and you will lose all data
-                associated with E-Summit 25.
-              </Text>
-              <View style={styles.modalActions}>
-                <Button
-                  mode="outlined"
-                  onPress={hideDeleteModal}
-                  style={styles.noButton}
-                  labelStyle={styles.buttonText}
-                >
-                  No
-                </Button>
-                <Button
-                  mode="contained"
-                  onPress={handleDeleteAccount}
-                  style={styles.yesButton}
-                  labelStyle={styles.buttonText}
-                >
-                  Yes
-                </Button>
-              </View>
-            </Modal>
-          </Portal>
-          <Faq />
-          <Divider style={styles.divider} />
-          <Contact />
-          <Divider style={styles.divider} />
-          <View style={styles.content1}>
+      <ScrollView>
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.containerStyle}
+          >
             <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingRight: 16,
-              }}
-              onPress={() => Linking.openURL("https://ecell.in/")}
+              style={{ alignItems: "flex-end", marginVertical: 15 }}
+              onPress={hideModal}
             >
-              <Text style={styles.follow}>ABOUT E-CELL</Text>
-              <List.Icon icon="chevron-right" color="#FFFFFF" />
+              <Text style={{ color: "#fff" }}>X</Text>
             </TouchableOpacity>
-          </View>
-          <Divider style={styles.divider} />
-          <View style={styles.content1}>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingRight: 16,
-              }}
-              onPress={showDeleteModal}
-            >
-              <Text style={styles.follow}>DELETE ACCOUNT</Text>
-              <List.Icon icon="chevron-right" color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-          <Divider style={styles.divider} />
-          {Others?.data?.map((item:IEventData, index:number) => (
-            <View style={styles.content1} key={index}>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingRight: 16,
-                }}
-                onPress={() => Linking.openURL(item.link)}
+          </Modal>
+          <Modal
+            visible={deleteVisible}
+            onDismiss={hideDeleteModal}
+            contentContainerStyle={styles.deleteContainerStyle}
+          >
+            <Text style={styles.modalTitle}>Delete Account</Text>
+            <Text style={styles.modalMessage}>
+              This action will delete your account, and you will lose all data
+              associated with E-Summit 25.
+            </Text>
+            <View style={styles.modalActions}>
+              <Button
+                mode="outlined"
+                onPress={hideDeleteModal}
+                style={styles.noButton}
+                labelStyle={styles.buttonText}
               >
-                <Text style={styles.follow}>{item.name}</Text>
-                <List.Icon icon="chevron-right" color="#FFFFFF" />
-              </TouchableOpacity>
+                No
+              </Button>
+              <Button
+                mode="contained"
+                onPress={handleDeleteAccount}
+                style={styles.yesButton}
+                labelStyle={styles.buttonText}
+              >
+                Yes
+              </Button>
             </View>
-          ))}
-          <Follow />
-        </ScrollView>
+          </Modal>
+        </Portal>
+        <Faq />
+        <Divider style={styles.divider} />
+        <Contact />
+        <Divider style={styles.divider} />
+        <View style={styles.content1}>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingRight: 16,
+            }}
+            onPress={() => Linking.openURL("https://ecell.in/")}
+          >
+            <Text style={styles.follow}>ABOUT E-CELL</Text>
+            <List.Icon icon="chevron-right" color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+        <Divider style={styles.divider} />
+        <View style={styles.content1}>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingRight: 16,
+            }}
+            onPress={showDeleteModal}
+          >
+            <Text style={styles.follow}>DELETE ACCOUNT</Text>
+            <List.Icon icon="chevron-right" color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+        <Divider style={styles.divider} />
+        {Others?.data?.map((item: any, index: number) => (
+          <View style={styles.content1} key={index}>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingRight: 16,
+              }}
+              onPress={() => Linking.openURL(item.link)}
+            >
+              <Text style={styles.follow}>{item.name}</Text>
+              <List.Icon icon="chevron-right" color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        ))}
+        <Follow />
+      </ScrollView>
     </View>
   );
 }
@@ -150,7 +150,6 @@ export default function MoreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
     padding: 20,
   },
   content1: {},
