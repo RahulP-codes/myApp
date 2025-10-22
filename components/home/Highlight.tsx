@@ -71,7 +71,7 @@ export const HighlightBox = (props: IHighlightBoxProps) => {
                 <Text
                   key={index}
                   style={{
-                    color: props.index == index ? '#B2B4FF' : '#fff',
+                    color: props.index == index ? '#f9f4b1ff' : '#fff',
                     marginHorizontal: 8,
                     fontSize: 10,
                   }}>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#232323',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    shadowColor: '#2B30B3', // Shadow color
+    shadowColor: '#FFE600', // Shadow color
     shadowOpacity: 0.7, // Shadow opacity (70%)
     shadowOffset: { width: 0, height: 0 }, // Spread shadow in all directions
     shadowRadius: 20, // Spread radius

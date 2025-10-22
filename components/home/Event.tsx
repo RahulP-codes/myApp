@@ -85,7 +85,7 @@ export const EventBox = (props: IEventBoxProps) => {
             >
               {/* <Button style={[styles.button]} onPress={() => Linking.openURL(url as string)}> */}
                 <Image
-                  source={require('../../assets/images/directionWhite.png')}
+                  source={require('../../assets/images/directionYellow.png')}
                   style={styles.icon}
                 />              
                 {/* </Button> */}

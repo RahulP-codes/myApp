@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import PagerView from "react-native-pager-view";
 import {
   View,
   StyleSheet,
@@ -46,6 +47,10 @@ export default function HomeScreen() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterDay, setFilterDay] = useState<string[]>(["1", "2"]);
   const [filterVenue, setFilterVenue] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const pagerRef = useRef<PagerView>(null);
+  const highlights = EventData?.data?.highlights;
 
   const onGoingEvents = useEventStore((state) => state.onGoing);
   const upcommingEvents = useEventStore((state) => state.upcoming);
@@ -106,465 +111,541 @@ export default function HomeScreen() {
     setFilterVenue("");
   };
 
+  useEffect(() => {
+    if (!highlights?.length) return;
+
+    const autoSlideInterval = setInterval(() => {
+      const nextPage = (currentPage + 1) % highlights.length;
+      setCurrentPage(nextPage);
+      pagerRef.current?.setPage(nextPage);
+    }, 3000);
+
+    return () => clearInterval(autoSlideInterval);
+  }, [currentPage, highlights]);
+
   return (
-      <View style={styles.backgroundContainer}>
-        <View style={styles.container}>
-          <Portal>
-            <Modal
-              visible={visible}
-              onDismiss={hideModal}
-              contentContainerStyle={styles.containerStyle}
+    <View style={styles.container}>
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={styles.containerStyle}
+        >
+          <ScrollView>
+            <List.Accordion
+              title="Categories"
+              style={styles.accordion}
+              titleStyle={styles.accordionTitle}
             >
-              <ScrollView>
-                <List.Accordion
-                  title="Categories"
-                  style={styles.accordion}
-                  titleStyle={styles.accordionTitle}
+              <View>
+                <RadioButton.Group
+                  onValueChange={(newValue) => setFilterCategory(newValue)}
+                  value={filterCategory}
                 >
-                  <View>
-                    <RadioButton.Group
-                      onValueChange={(newValue) => setFilterCategory(newValue)}
-                      value={filterCategory}
-                    >
-                      {categories.map((item, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            onPress={() => {
-                              if (filterCategory === item) {
-                                setFilterCategory("");
-                              } else {
-                                setFilterCategory(item);
-                              }
-                            }}
-                          >
-                            <View style={styles.itemList}>
-                              <RadioButton value={item} />
-                              <Text style={styles.itemText}>{item}</Text>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </RadioButton.Group>
-                  </View>
-                </List.Accordion>
-
-                <Divider style={styles.divider} />
-
-                <List.Accordion
-                  title="Venue"
-                  style={styles.accordion}
-                  titleStyle={styles.accordionTitle}
-                >
-                  <View>
-                    <RadioButton.Group
-                      onValueChange={(newValue) => setFilterVenue(newValue)}
-                      value={filterVenue}
-                    >
-                      {venues.map((item, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            onPress={() => {
-                              if (filterVenue === item) {
-                                setFilterVenue("");
-                              } else {
-                                setFilterVenue(item);
-                              }
-                            }}
-                          >
-                            <View style={styles.itemList}>
-                              <RadioButton value={item} />
-                              <Text style={styles.itemText}>{item}</Text>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </RadioButton.Group>
-                  </View>
-                </List.Accordion>
-              </ScrollView>
-              <View style={styles.modalFooter}>
-                <Button mode="contained" onPress={handleResetModal}>
-                  Reset
-                </Button>
-                <Button mode="contained" onPress={hideModal}>
-                  Done
-                </Button>
-              </View>
-            </Modal>
-          </Portal>
-
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={isLoading} onRefresh={refetch} />
-            }
-          >
-            {isLoading ? (
-              <ActivityIndicator
-                animating={true}
-                color="#808f0dff"
-                size="large"
-                style={{ marginTop: 20 }}
-              />
-            ) : (
-              <>
-                {isguest ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      Linking.openURL("https://ecell.in/esummit/register");
-                    }}
-                  >
-                    <View
-                      style={[
-                        styles.section,
-                        {
-                          backgroundColor: "red",
-                          padding: 25,
-                          paddingBottom: 7,
-                        },
-                      ]}
-                    >
-                      <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
-                        You are Signed in as guest user
-                      </Text>
-                      <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
-                        Register Now and Relogin to get entry in E-Summit
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#fff",
-                          fontSize: 20,
-                          fontFamily: "ProximaBold",
+                  {categories.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          if (filterCategory === item) {
+                            setFilterCategory("");
+                          } else {
+                            setFilterCategory(item);
+                          }
                         }}
                       >
-                        Click here!
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : null}
-                <View style={styles.section}>
-                  <Text style={styles.heading}>HIGHLIGHT SESSIONS</Text>
+                        <View style={styles.itemList}>
+                          <RadioButton value={item} />
+                          <Text style={styles.itemText}>{item}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </RadioButton.Group>
+              </View>
+            </List.Accordion>
 
-                  <ScrollView horizontal style={styles.highlightScroll}>
-                    {EventData?.data?.highlights.map((item, index) => (
-                      <View
+            <Divider style={styles.divider} />
+
+            <List.Accordion
+              title="Venue"
+              style={styles.accordion}
+              titleStyle={styles.accordionTitle}
+            >
+              <View>
+                <RadioButton.Group
+                  onValueChange={(newValue) => setFilterVenue(newValue)}
+                  value={filterVenue}
+                >
+                  {venues.map((item, index) => {
+                    return (
+                      <TouchableOpacity
                         key={index}
-                        style={{ width: Dimensions.get("window").width - 40 }}
-                      >
-                        <Highlight
-                          url={item.image}
-                          alt={item.name}
-                          id={item.id}
-                          index={index}
-                          length={EventData?.data.highlights.length}
-                          venue={item.venue.name}
-                          day={item.day}
-                          startTime={item.startTime}
-                          isLive={
-                            new Date(item.startTime) < new Date() &&
-                            new Date(item.endTime) > new Date()
+                        onPress={() => {
+                          if (filterVenue === item) {
+                            setFilterVenue("");
+                          } else {
+                            setFilterVenue(item);
                           }
-                          navigation={{
-                            navigate: (screen: string, params: any) =>
-                              router.push(
-                                `/${screen.toLowerCase()}?id=${
-                                  params.id
-                                }` as any
-                              ),
-                          }}
-                        />
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-
-                <View style={styles.headcont2}>
-                  <Button
-                    style={[
-                      styles.daybutton,
-                      {
-                        backgroundColor:
-                          filterDay.length === 2
-                            ? "#382ad3"
-                            : "hsla(0, 0.00%, 100.00%, 0.05)",
-                      },
-                    ]}
-                    onPress={() => setFilterDay(["1", "2"])}
-                  >
-                    <Text style={styles.daybuttonText}>ALL</Text>
-                  </Button>
-                  <Button
-                    style={[
-                      styles.daybutton,
-                      {
-                        backgroundColor:
-                          filterDay.includes("1") && filterDay.length === 1
-                            ? "#382ad3"
-                            : "hsla(0, 0.00%, 100.00%, 0.05)",
-                      },
-                    ]}
-                    onPress={() => setFilterDay(["1"])}
-                  >
-                    <Text style={styles.daybuttonText}>DAY 1</Text>
-                  </Button>
-                  <Button
-                    style={[
-                      styles.daybutton,
-                      {
-                        backgroundColor:
-                          filterDay.includes("2") && filterDay.length === 1
-                            ? "#382ad3"
-                            : "hsla(0, 0.00%, 100.00%, 0.05)",
-                      },
-                    ]}
-                    onPress={() => setFilterDay(["2"])}
-                  >
-                    <Text style={styles.daybuttonText}>DAY 2</Text>
-                  </Button>
-                </View>
-
-                <View style={styles.section}>
-                  <View style={styles.iconsContainer}>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("oat")}
-                      style={
-                        filterCategory === "oat" ? styles.icon2 : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>OAT Event</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("ltpcsa")}
-                      style={
-                        filterCategory === "ltpcsa" ? styles.icon2 : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>LT-PCSA</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("lhc")}
-                      style={
-                        filterCategory === "lhc" ? styles.icon2 : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>LHC Sessions</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("convo")}
-                      style={
-                        filterCategory === "convo" ? styles.icon2 : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>Convocation Hall</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("startup events")}
-                      style={
-                        filterCategory === "startup events"
-                          ? styles.icon2
-                          : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>Startup Events</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => togglefilter("student events")}
-                      style={
-                        filterCategory === "student events"
-                          ? styles.icon2
-                          : styles.icon
-                      }
-                    >
-                      <Text style={styles.iconText}>Student Events</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                {onGoingEvents.length > 0 && (
-                  <View style={styles.section}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text style={[styles.heading, { alignSelf: "center" }]}>
-                        ONGOING EVENTS
-                      </Text>
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                      <View style={styles.events}>
-                        {filterData(
-                          onGoingEvents,
-                          filterCategory,
-                          filterDay,
-                          filterVenue
-                        ).map((item: IEventData, index: number) => (
-                          <Event
-                            key={index}
-                            id={item.id}
-                            url={item.image}
-                            event={item.name}
-                            description={item.description}
-                            venue={item.venue.name}
-                            latitude={item.venue.latitude}
-                            longitude={item.venue.longitude}
-                            startTime={
-                              typeof item.startTime === "string"
-                                ? new Date(item.startTime)
-                                : item.startTime
-                            }
-                            endTime={
-                              typeof item.endTime === "string"
-                                ? new Date(item.endTime)
-                                : item.endTime
-                            }
-                            tag="ongoing"
-                            navigation={{
-                              navigate: (screen: string, params: any) =>
-                                router.push(
-                                  `/${screen.toLowerCase()}?id=${
-                                    params.id
-                                  }` as any
-                                ),
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-                )}
-
-                {upcommingEvents.length > 0 && (
-                  <View style={styles.section}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text style={styles.heading}>UPCOMING EVENTS</Text>
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                      <View style={styles.events}>
-                        {filterData(
-                          upcommingEvents,
-                          filterCategory,
-                          filterDay,
-                          filterVenue
-                        ).map((item: IEventData, index: number) => (
-                          <Event
-                            key={index}
-                            id={item.id}
-                            url={item.image}
-                            event={item.name}
-                            description={item.description}
-                            venue={item.venue.name}
-                            latitude={item.venue.latitude}
-                            longitude={item.venue.longitude}
-                            startTime={
-                              typeof item.startTime === "string"
-                                ? new Date(item.startTime)
-                                : item.startTime
-                            }
-                            endTime={
-                              typeof item.endTime === "string"
-                                ? new Date(item.endTime)
-                                : item.endTime
-                            }
-                            tag="ongoing"
-                            navigation={{
-                              navigate: (screen: string, params: any) =>
-                                router.push(
-                                  `/${screen.toLowerCase()}?id=${
-                                    params.id
-                                  }` as any
-                                ),
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-                )}
-
-                {completedEvents.length > 0 && (
-                  <View style={styles.eventsCont}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text style={styles.heading}>COMPLETED EVENTS</Text>
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                      <View style={styles.events}>
-                        {filterData(
-                          completedEvents,
-                          filterCategory,
-                          filterDay,
-                          filterVenue
-                        ).map((item: IEventData, index: number) => (
-                          <Event
-                            key={index}
-                            id={item.id}
-                            url={item.image}
-                            event={item.name}
-                            description={item.description}
-                            venue={item.venue.name}
-                            latitude={item.venue.latitude}
-                            longitude={item.venue.longitude}
-                            startTime={
-                              typeof item.startTime === "string"
-                                ? new Date(item.startTime)
-                                : item.startTime
-                            }
-                            endTime={
-                              typeof item.endTime === "string"
-                                ? new Date(item.endTime)
-                                : item.endTime
-                            }
-                            tag="ongoing"
-                            navigation={{
-                              navigate: (screen: string, params: any) =>
-                                router.push(
-                                  `/${screen.toLowerCase()}?id=${
-                                    params.id
-                                  }` as any
-                                ),
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-                )}
-                <View style={{ marginBottom: 100 }}></View>
-              </>
-            )}
+                        }}
+                      >
+                        <View style={styles.itemList}>
+                          <RadioButton value={item} />
+                          <Text style={styles.itemText}>{item}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </RadioButton.Group>
+              </View>
+            </List.Accordion>
           </ScrollView>
-        </View>
-      </View>
+          <View style={styles.modalFooter}>
+            <Button mode="contained" onPress={handleResetModal}>
+              Reset
+            </Button>
+            <Button mode="contained" onPress={hideModal}>
+              Done
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
+
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
+      >
+        {isLoading ? (
+          <ActivityIndicator
+            animating={true}
+            color="#FFE600"
+            size="large"
+            style={{ marginTop: 20 }}
+          />
+        ) : (
+          <>
+            {isguest ? (
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL("https://ecell.in/esummit/register");
+                }}
+              >
+                <View
+                  style={[
+                    styles.section,
+                    {
+                      backgroundColor: "red",
+                      padding: 25,
+                      paddingBottom: 7,
+                    },
+                  ]}
+                >
+                  <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
+                    You are Signed in as guest user
+                  </Text>
+                  <Text style={{ color: "#fff", fontFamily: "Proxima" }}>
+                    Register Now and Relogin to get entry in E-Summit
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 20,
+                      fontFamily: "ProximaBold",
+                    }}
+                  >
+                    Click here!
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
+
+            <View style={styles.section}>
+              <Text style={styles.heading}>HIGHLIGHT SESSIONS</Text>
+
+              <PagerView
+                style={styles.highlightScroll}
+                initialPage={0}
+                pageMargin={-20}
+                onPageSelected={(event) =>
+                  setCurrentPage(event.nativeEvent.position)
+                }
+                ref={pagerRef}
+              >
+                {EventData?.data?.highlights.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      paddingHorizontal: 11,
+                    }}
+                  >
+                    <Highlight
+                      url={item.image}
+                      alt={item.name}
+                      id={item.id}
+                      index={index}
+                      length={EventData?.data.highlights.length}
+                      venue={item.venue.name}
+                      day={item.day}
+                      startTime={item.startTime}
+                      isLive={
+                        new Date(item.startTime) < new Date() &&
+                        new Date(item.endTime) > new Date()
+                      }
+                      navigation={{
+                        navigate: (screen: string, params: any) =>
+                          router.push(
+                            `/${screen.toLowerCase()}?id=${params.id}` as any
+                          ),
+                      }}
+                    />
+                  </View>
+                ))}
+              </PagerView>
+            </View>
+
+            <View style={styles.headcont2}>
+              <Button
+                style={[
+                  styles.daybutton,
+                  {
+                    backgroundColor:
+                      filterDay.length === 2
+                        ? "#FFE600"
+                        : "hsla(0, 0.00%, 100.00%, 0.05)",
+                  },
+                ]}
+                onPress={() => setFilterDay(["1", "2"])}
+              >
+                <Text
+                  style={[
+                    styles.daybuttonText,
+                    { color: filterDay.length === 2 ? "black" : "white" },
+                  ]}
+                >
+                  ALL
+                </Text>
+              </Button>
+              <Button
+                style={[
+                  styles.daybutton,
+                  {
+                    backgroundColor:
+                      filterDay.includes("1") && filterDay.length === 1
+                        ? "#FFE600"
+                        : "hsla(0, 0.00%, 100.00%, 0.05)",
+                  },
+                ]}
+                onPress={() => setFilterDay(["1"])}
+              >
+                <Text
+                  style={[
+                    styles.daybuttonText,
+                    {
+                      color:
+                        filterDay.includes("1") && filterDay.length === 1
+                          ? "black"
+                          : "white",
+                    },
+                  ]}
+                >
+                  DAY 1
+                </Text>
+              </Button>
+              <Button
+                style={[
+                  styles.daybutton,
+                  {
+                    backgroundColor:
+                      filterDay.includes("2") && filterDay.length === 1
+                        ? "#FFE600"
+                        : "hsla(0, 0.00%, 100.00%, 0.05)",
+                  },
+                ]}
+                onPress={() => setFilterDay(["2"])}
+              >
+                <Text
+                  style={[
+                    styles.daybuttonText,
+                    {
+                      color:
+                        filterDay.includes("2") && filterDay.length === 1
+                          ? "black"
+                          : "white",
+                    },
+                  ]}
+                >
+                  DAY 2
+                </Text>
+              </Button>
+            </View>
+
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity
+                onPress={() => togglefilter("oat")}
+                style={filterCategory === "oat" ? styles.icon2 : styles.icon}
+              >
+                <Text
+                  style={
+                    filterCategory === "oat"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  OAT Event
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => togglefilter("ltpcsa")}
+                style={filterCategory === "ltpcsa" ? styles.icon2 : styles.icon}
+              >
+                <Text
+                  style={
+                    filterCategory === "ltpcsa"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  LT-PCSA
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => togglefilter("lhc")}
+                style={filterCategory === "lhc" ? styles.icon2 : styles.icon}
+              >
+                <Text
+                  style={
+                    filterCategory === "lhc"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  LHC Sessions
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => togglefilter("convo")}
+                style={filterCategory === "convo" ? styles.icon2 : styles.icon}
+              >
+                <Text
+                  style={
+                    filterCategory === "convo"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  Convocation Hall
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => togglefilter("startup events")}
+                style={
+                  filterCategory === "startup events"
+                    ? styles.icon2
+                    : styles.icon
+                }
+              >
+                <Text
+                  style={
+                    filterCategory === "startup events"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  Startup Events
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => togglefilter("student events")}
+                style={
+                  filterCategory === "student events"
+                    ? styles.icon2
+                    : styles.icon
+                }
+              >
+                <Text
+                  style={
+                    filterCategory === "student events"
+                      ? styles.iconText2
+                      : styles.iconText
+                  }
+                >
+                  Student Events
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {onGoingEvents.length > 0 && (
+              <View style={styles.section}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={[styles.heading, { alignSelf: "center" }]}>
+                    ONGOING EVENTS
+                  </Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <View style={styles.events}>
+                    {filterData(
+                      onGoingEvents,
+                      filterCategory,
+                      filterDay,
+                      filterVenue
+                    ).map((item: IEventData, index: number) => (
+                      <Event
+                        key={index}
+                        id={item.id}
+                        url={item.image}
+                        event={item.name}
+                        description={item.description}
+                        venue={item.venue.name}
+                        latitude={item.venue.latitude}
+                        longitude={item.venue.longitude}
+                        startTime={
+                          typeof item.startTime === "string"
+                            ? new Date(item.startTime)
+                            : item.startTime
+                        }
+                        endTime={
+                          typeof item.endTime === "string"
+                            ? new Date(item.endTime)
+                            : item.endTime
+                        }
+                        tag="ongoing"
+                        navigation={{
+                          navigate: (screen: string, params: any) =>
+                            router.push(
+                              `/${screen.toLowerCase()}?id=${params.id}` as any
+                            ),
+                        }}
+                      />
+                    ))}
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {upcommingEvents.length > 0 && (
+              <View style={styles.section}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.heading}>UPCOMING EVENTS</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <View style={styles.events}>
+                    {filterData(
+                      upcommingEvents,
+                      filterCategory,
+                      filterDay,
+                      filterVenue
+                    ).map((item: IEventData, index: number) => (
+                      <Event
+                        key={index}
+                        id={item.id}
+                        url={item.image}
+                        event={item.name}
+                        description={item.description}
+                        venue={item.venue.name}
+                        latitude={item.venue.latitude}
+                        longitude={item.venue.longitude}
+                        startTime={
+                          typeof item.startTime === "string"
+                            ? new Date(item.startTime)
+                            : item.startTime
+                        }
+                        endTime={
+                          typeof item.endTime === "string"
+                            ? new Date(item.endTime)
+                            : item.endTime
+                        }
+                        tag="ongoing"
+                        navigation={{
+                          navigate: (screen: string, params: any) =>
+                            router.push(
+                              `/${screen.toLowerCase()}?id=${params.id}` as any
+                            ),
+                        }}
+                      />
+                    ))}
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {completedEvents.length > 0 && (
+              <View style={styles.eventsCont}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.heading}>COMPLETED EVENTS</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <View style={styles.events}>
+                    {filterData(
+                      completedEvents,
+                      filterCategory,
+                      filterDay,
+                      filterVenue
+                    ).map((item: IEventData, index: number) => (
+                      <Event
+                        key={index}
+                        id={item.id}
+                        url={item.image}
+                        event={item.name}
+                        description={item.description}
+                        venue={item.venue.name}
+                        latitude={item.venue.latitude}
+                        longitude={item.venue.longitude}
+                        startTime={
+                          typeof item.startTime === "string"
+                            ? new Date(item.startTime)
+                            : item.startTime
+                        }
+                        endTime={
+                          typeof item.endTime === "string"
+                            ? new Date(item.endTime)
+                            : item.endTime
+                        }
+                        tag="ongoing"
+                        navigation={{
+                          navigate: (screen: string, params: any) =>
+                            router.push(
+                              `/${screen.toLowerCase()}?id=${params.id}` as any
+                            ),
+                        }}
+                      />
+                    ))}
+                  </View>
+                </View>
+              </View>
+            )}
+            <View style={{ marginBottom: 100 }}></View>
+          </>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundContainer: {
-    // display: 'none',
-    flex: 1,
-    backgroundColor: "transparent",
-  },
-
   container: {
     flex: 1,
-    backgroundColor: 'transparent'
+    backgroundColor: "transparent",
   },
 
   scrollView: {
@@ -572,7 +653,7 @@ const styles = StyleSheet.create({
   },
 
   headcont2: {
-    width: "69%",
+    alignSelf: "flex-start",
     flexDirection: "row",
     marginVertical: 10,
     marginLeft: -1,
@@ -584,14 +665,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
   },
   daybutton: {
-    backgroundColor: "#382ad3",
-    color: "#ffffff",
+    // backgroundColor: "#382ad3",
+    // color: "#ffffff",
     width: 70,
     marginHorizontal: 5,
   },
   daybuttonText: {
     fontFamily: "ProximaBold",
-    color: "#ffffff",
   },
   containerStyle: {
     backgroundColor: "#BBD4E2",
@@ -602,9 +682,9 @@ const styles = StyleSheet.create({
     maxHeight: Dimensions.get("window").width,
   },
   section: {
-    backgroundColor: 'transparent',
-    margin: 3,
-    paddingHorizontal: 10,
+    // backgroundColor: "transparent",
+    marginVertical: 3,
+    // paddingHorizontal: 10,
   },
   heading: {
     fontFamily: "ProximaExtraBold",
@@ -618,6 +698,7 @@ const styles = StyleSheet.create({
   },
   highlightScroll: {
     height: 200,
+    // backgroundColor: "white",
   },
   eventsCont: {
     marginVertical: 10,
@@ -663,6 +744,8 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   iconsContainer: {
+    margin: 3,
+    paddingHorizontal: 10,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
@@ -684,12 +767,20 @@ const styles = StyleSheet.create({
     width: "30%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#382ad3",
+    backgroundColor: "#FFE600",
     borderRadius: 12,
     aspectRatio: 2,
+    color: "black",
   },
   iconText: {
     color: "#ffffff",
+    fontSize: 12,
+    marginTop: 2,
+    textAlign: "center",
+    fontFamily: "Proxima",
+  },
+  iconText2: {
+    color: "#000000",
     fontSize: 12,
     marginTop: 2,
     textAlign: "center",
