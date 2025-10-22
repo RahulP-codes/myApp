@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native";
 import { Divider, List, Modal, Portal, Button } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Contact, Faq, Follow } from "../../components/others";
@@ -51,7 +50,6 @@ export default function MoreScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
         <ScrollView>
           <Portal>
             <Modal
@@ -145,7 +143,6 @@ export default function MoreScreen() {
           ))}
           <Follow />
         </ScrollView>
-      </SafeAreaView>
     </View>
   );
 }
