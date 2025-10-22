@@ -24,14 +24,14 @@ interface IConnectBoxProps {
 }
 
 export const ConnectCard = (props: IConnectBoxProps) => {
+  const [connecttext, setconnecttext] = useState(props.btnText);
+  const [isdisable, setdisable] = useState(false);
+  
   const toast = useToast();
   const email = useProfileStore(state => state.email);
   
   const { mutateAsync: sendRequest } = usesendRequest();
   const { mutateAsync: accept } = useaccept();
-
-  const [connecttext, setconnecttext] = useState('');
-  const [isdisable, setdisable] = useState(false);
 
   const handleSubmit = () => {
     const id = props.id;
@@ -62,11 +62,7 @@ export const ConnectCard = (props: IConnectBoxProps) => {
 
   useEffect(() => {
     setconnecttext(props.btnText);
-    if (connecttext === 'Requested') {
-      setdisable(true);
-    } else {
-      setdisable(false);
-    }
+    setdisable(props.btnText === 'Requested');
   }, [props.btnText]);
 
   return (
@@ -162,13 +158,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     height: 30,
     borderRadius: 20,
-    backgroundColor: '#382ad3',
-    color: '#ffffff',
+    backgroundColor: '#FFE600',
+    color: '#000000',
     width: '100%',
   },
   buttonText: {
     fontSize: 10,
     lineHeight: 15,
-    color: '#ffffff',
+    color: '#000000',
   },
 });

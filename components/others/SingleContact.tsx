@@ -17,11 +17,11 @@ export const SingleContact = (props: ISingleContactProps) => {
         <Text style={[styles.center, { paddingHorizontal: 10 }, styles.name]}>{props.name}</Text>
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity style={styles.center} onPress={() => Linking.openURL(`tel:${props.phone}`)}>
-          <IconButton icon="phone" size={20} />
+        <TouchableOpacity style={[styles.center, styles.iconCircle]} onPress={() => Linking.openURL(`tel:${props.phone}`)}>
+          <IconButton icon="phone" size={20} iconColor="#FFFFFF" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.center} onPress={() => Linking.openURL(`mailto:${props.email}`)}>
-          <IconButton icon="email" size={20} />
+        <TouchableOpacity style={[styles.center, styles.iconCircle]} onPress={() => Linking.openURL(`mailto:${props.email}`)}>
+          <IconButton icon="email" size={20} iconColor="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </View>
@@ -49,5 +49,14 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
+    backgroundColor: '#413000',
+  },
+  iconCircle: {
+    backgroundColor: '#413000',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
