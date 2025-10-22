@@ -23,6 +23,13 @@ export const deleteProfile = async (email: string) => {
 };
 
 export const getVenues = async () => {
-  const response = await axios.get(`${BASE_URL}/venue/`);
-  return response.data;
+  try {
+    console.log('Calling venues API:', `${BASE_URL}/venues/`);
+    const response = await axios.get(`${BASE_URL}/venues/`);
+    console.log('Venues API Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.log('Venues API Error:', error);
+    throw error;
+  }
 };

@@ -26,5 +26,12 @@ export const useVenues = () => {
   return useQuery({
     queryKey: ['venues'],
     queryFn: getVenues,
+    retry: 1,
+    onError: (error) => {
+      console.log('Venues API Error:', error);
+    },
+    onSuccess: (data) => {
+      console.log('Venues API Success:', data);
+    },
   });
 };

@@ -1,37 +1,56 @@
 import React from 'react';
-import { ActivityIndicator, ImageBackground, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Location } from '../../components/map';
 import { useVenues } from '../../hooks/query/other-query';
-import { IEventData } from '@/types/api/events.types';
 
 export default function MapsScreen() {
   const { data: Venues, isLoading, refetch } = useVenues();
   const venuedata = Venues?.data;
-  
-  console.log('Venues:', Venues);
-  console.log('venuedata:', venuedata);
+
+  console.log('Venues Response:', Venues);
+  console.log('Venue Data:', venuedata);
+  console.log('Is Loading:', isLoading);
 
   return (
     <View style={styles.container}>
-      <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
-        <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}>
-          {isLoading ? (
-            <ActivityIndicator animating={true} color="#4E8FB4" size="large" style={{ marginTop: 20 }} />
-          ) : (
-            <View style={{ marginBottom: 80 }}>
-              <Text style={styles.title}>VENUES</Text>
-              <View style={styles.content}>
-                {venuedata?.map((item:IEventData, index:number) => (
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
+      >
+        {isLoading ? (
+          <ActivityIndicator
+            animating={true}
+            color="#4E8FB4"
+            size="large"
+            style={{ marginTop: 20 }}
+          />
+        ) : (
+          <View style={{ height: '100%', marginBottom: 80 }}>
+            <Text style={styles.title}>VENUES</Text>
+            <View style={styles.content}>
+              {venuedata && venuedata.length > 0 ? (
+                venuedata.map((item, index) => (
                   <View key={index}>
-                    <Location name={item.name} image={item.image} latitude={item.latitude} longitude={item.longitude} />
+                    <Location
+                      name={item.name}
+                      image={item.image}
+                      latitude={item.latitude}
+                      longitude={item.longitude}
+                    />
                   </View>
-                ))}
-              </View>
+                ))
+              ) : (
+                <Text style={{ color: 'white', textAlign: 'center', marginTop: 20 }}>
+                  {Venues ? 'No venues available' : 'Loading venues...'}
+                </Text>
+              )}
             </View>
-          )}
-        </ScrollView>
-      </SafeAreaView>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -40,6 +59,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  scrollView: {
+    flex: 1,
   },
   title: {
     fontFamily: 'ProximaExtraBold',
@@ -51,7 +73,7 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    padding: 10,
   },
 });
