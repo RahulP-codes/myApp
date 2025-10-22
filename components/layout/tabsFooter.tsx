@@ -7,10 +7,14 @@ export const Footer = ({ state, descriptors, navigation }: any) => {
       <View style={styles.shadowWrapper}>
         <LinearGradient
           colors={["#24347F", "#4A4C8B"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={styles.borderContainer}
         >
           <LinearGradient
             colors={["#B6A400", "#998A00"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.mainGradient}
           >
             <View style={styles.tabsWrapper}>

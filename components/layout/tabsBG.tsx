@@ -49,8 +49,8 @@ export const Background = ({ children }: { children: ReactNode }) => {
               fx={123 / 2}
               fy={123 / 2}
             >
-              <Stop offset="0%" stopColor="#8128e074" stopOpacity="0.2" />
-              <Stop offset="100%" stopColor="#8128E0" stopOpacity="0" />
+              <Stop offset="0%" stopColor="#FFE60074" stopOpacity="0.2" />
+              <Stop offset="100%" stopColor="#FFE600" stopOpacity="0" />
             </RadialGradient>
           </Defs>
           <Ellipse
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   svg2: {
     flex: 1,
     position: "absolute",
-    top: 560,
-    left: 310,
+    top: 500,
+    left: 290,
   },
 });
