@@ -46,3 +46,12 @@ export const mapUrl = (latitude: string | undefined, longitude: string | undefin
   });
   return url;
 };
+
+export const filterConnect = (connects: any[], searchText: string) => {
+  if (!searchText) return connects;
+  return connects.filter(item => 
+    item.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.company_name?.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.persontype?.toLowerCase().includes(searchText.toLowerCase())
+  );
+};

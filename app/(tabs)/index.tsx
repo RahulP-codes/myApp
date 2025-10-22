@@ -296,9 +296,7 @@ export default function HomeScreen() {
                       }
                       navigation={{
                         navigate: (screen: string, params: any) =>
-                          router.push(
-                            `/${screen.toLowerCase()}?id=${params.id}` as any
-                          ),
+                          router.push(`/event?id=${params.id}` as any),
                       }}
                     />
                   </View>
@@ -520,9 +518,7 @@ export default function HomeScreen() {
                         tag="ongoing"
                         navigation={{
                           navigate: (screen: string, params: any) =>
-                            router.push(
-                              `/${screen.toLowerCase()}?id=${params.id}` as any
-                            ),
+                            router.push(`/event?id=${params.id}` as any),
                         }}
                       />
                     ))}
@@ -572,9 +568,7 @@ export default function HomeScreen() {
                         tag="ongoing"
                         navigation={{
                           navigate: (screen: string, params: any) =>
-                            router.push(
-                              `/${screen.toLowerCase()}?id=${params.id}` as any
-                            ),
+                            router.push(`/event?id=${params.id}` as any),
                         }}
                       />
                     ))}
@@ -624,9 +618,7 @@ export default function HomeScreen() {
                         tag="ongoing"
                         navigation={{
                           navigate: (screen: string, params: any) =>
-                            router.push(
-                              `/${screen.toLowerCase()}?id=${params.id}` as any
-                            ),
+                            router.push(`/event?id=${params.id}` as any),
                         }}
                       />
                     ))}

@@ -57,17 +57,16 @@ const styles = {
   button: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#382ad3',
-    borderColor: '#382ad3',
+    backgroundColor: '#FFE600',
+    borderColor: '#FFE600',
     borderWidth: 1,
   },
   selectedButton: {
-    backgroundColor: '#382ad3',
-    borderColor: '#382ad3',
+    backgroundColor: '#FFE600',
+    borderColor: '#FFE600',
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#000',
     fontSize: 14,
-    // fontFamily: 'Poppins',
   },
 };
