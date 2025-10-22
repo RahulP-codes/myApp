@@ -549,7 +549,7 @@ export default function HomeScreen() {
 
       <View style={styles.getEntryContainer}>
         <View style={{ width: "100%", alignItems: "center" }}>
-          <EntryQR email={email} qrcode={qrcode} variant="home">
+          <EntryQR email={email} qrcode={qrcode}>
             <View
               style={{
                 backgroundColor: "#05020E",

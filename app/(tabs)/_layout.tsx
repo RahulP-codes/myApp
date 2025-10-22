@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import { Image } from "react-native";
 import { Navbar } from "../../components/layout/tabsNavbar";
 import { Footer } from "../../components/layout/tabsFooter";
-import { Background } from "../../components/layout/tabsBG";
+import { Background } from "../../components/layout/homeBG";
 
 const getIconStyle = (focused: boolean) => ({
   width: 30,

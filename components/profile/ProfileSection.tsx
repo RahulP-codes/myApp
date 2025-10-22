@@ -10,7 +10,7 @@ interface IProfileSectionProps {
 export const ProfileSection = (props: IProfileSectionProps) => (
   <View style={styles.container}>
     <Image
-      source={{ uri: 'https://res.cloudinary.com/dcqw5mziu/image/upload/v1737240115/profileIcon_rsj9ln.png' }}
+      source={require('../../assets/images/profileIcon.png')}
       style={styles.image}
     />
     <View style={styles.content}>
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 35,
-    gap: 20,
+    paddingTop: 25,
+    gap: 15,
   },
   image: {
     width: 154,

@@ -1,8 +1,6 @@
 import { ReactNode } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import { ImageBackground, View, StyleSheet } from "react-native";
 import Svg, { Defs, RadialGradient, Stop, Ellipse } from "react-native-svg";
-import { BlurView } from "expo-blur";
 
 export const Background = ({ children }: { children: ReactNode }) => {
   return (
