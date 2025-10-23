@@ -90,11 +90,7 @@ export default function NetworkScreen() {
                       navigation={{
                         navigate: (screen: string, params: any) => {
                           if (screen === "SingleConnect") {
-                            // Navigate to single connect page when implemented
-                            console.log(
-                              "Navigate to single connect:",
-                              params.id
-                            );
+                            router.push(`/connect-profile?id=${params.id}`);
                           }
                         },
                       }}

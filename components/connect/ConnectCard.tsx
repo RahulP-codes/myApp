@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import { Button } from 'react-native-paper';
 import { useToast } from 'react-native-toast-notifications';
 import { useProfileStore } from '../../store/profile-store';
-import { usesendRequest, useaccept } from '../../hooks/mutation/user-action-mutation';
+import { sendRequest, accept } from '../../api/user';
 
 interface IConnectBoxProps {
   id: string;
@@ -24,46 +24,37 @@ interface IConnectBoxProps {
 }
 
 export const ConnectCard = (props: IConnectBoxProps) => {
-  const [connecttext, setconnecttext] = useState(props.btnText);
-  const [isdisable, setdisable] = useState(false);
-  
   const toast = useToast();
   const email = useProfileStore(state => state.email);
-  
-  const { mutateAsync: sendRequest } = usesendRequest();
-  const { mutateAsync: accept } = useaccept();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const id = props.id;
-    if (connecttext === 'Connect') {
-      sendRequest({ email, id: id }).then(data => {
+    if (props.btnText === 'Connect') {
+      try {
+        const data = await sendRequest(email, id);
         if (data.success) {
           toast.show('Connection Request Sent!', { type: 'success' });
-          setconnecttext('Requested');
         } else {
           toast.show('Some error occurred. Try Later', { type: 'danger' });
         }
-      });
-    } else if (connecttext === 'Accept') {
-      accept({ id: id, email: email }).then((data) => {
+      } catch (error) {
+        toast.show('Some error occurred. Try Later', { type: 'danger' });
+      }
+    } else if (props.btnText === 'Accept') {
+      try {
+        const data = await accept(id, email);
         if (data.success) {
           toast.show('Success!', { type: 'success' });
-          setconnecttext('Know more');
         } else {
           toast.show('Some error occurred. Try Later', { type: 'danger' });
         }
-      });
-    } else if (connecttext === 'Know more') {
+      } catch (error) {
+        toast.show('Some error occurred. Try Later', { type: 'danger' });
+      }
+    } else if (props.btnText === 'Know more') {
       props.navigation.navigate('SingleConnect', { id: props.id });
-    } else {
-      setdisable(true);
     }
   };
-
-  useEffect(() => {
-    setconnecttext(props.btnText);
-    setdisable(props.btnText === 'Requested');
-  }, [props.btnText]);
 
   return (
     <TouchableOpacity onPress={() => props.navigation.navigate('SingleConnect', { id: props.id })}>
@@ -105,8 +96,8 @@ export const ConnectCard = (props: IConnectBoxProps) => {
           
           <View>
             <TouchableOpacity style={{ width: '100%', alignSelf: 'center' }}>
-              <Button style={[styles.button, { marginTop: 10 }]} onPress={handleSubmit} disabled={isdisable}>
-                <Text style={styles.buttonText}>{connecttext}</Text>
+              <Button style={[styles.button, { marginTop: 10 }]} onPress={handleSubmit} disabled={props.btnText === 'Requested'}>
+                <Text style={styles.buttonText}>{props.btnText}</Text>
               </Button>
             </TouchableOpacity>
           </View>

@@ -60,7 +60,7 @@ export default function ConnectionsScreen() {
           <ActivityIndicator animating={true} color="#FFE600" size="large" style={{ marginTop: 20 }} />
         ) : (
           <View style={styles.section}>
-            {page === 'accepted' && accepted?.map((item, index) => (
+            {page === 'accepted' && accepted && accepted.map((item, index) => (
               <ConnectCard
                 key={index}
                 id={item.id}
@@ -76,7 +76,7 @@ export default function ConnectionsScreen() {
               />
             ))}
             
-            {page === 'sent' && waiting?.map((item, index) => (
+            {page === 'sent' && waiting && waiting.map((item, index) => (
               <ConnectCard
                 key={index}
                 id={item.id}
@@ -92,7 +92,7 @@ export default function ConnectionsScreen() {
               />
             ))}
             
-            {page === 'received' && received?.map((item, index) => (
+            {page === 'received' && received && received.map((item, index) => (
               <ConnectCard
                 key={index}
                 id={item.id}
