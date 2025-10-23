@@ -53,7 +53,7 @@ export const InputBox = (props: IInputBoxProps) => {
       <TextInput
         style={[
           styles.input,
-          { borderBottomColor: isValid ? '#B792FF' : '#D10000' },
+          { borderBottomColor: isValid ? '#FFF266' : '#D10000' },
         ]}
         value={props.value}
         onChangeText={handleTextChange}
@@ -79,7 +79,7 @@ export const InputBox = (props: IInputBoxProps) => {
         <Text
           style={{
             fontFamily: 'Proxima',
-            color: '#B792FF',
+            color: '#FFF266',
             textAlign: 'center',
             fontSize: 16,
             fontWeight: 'bold',

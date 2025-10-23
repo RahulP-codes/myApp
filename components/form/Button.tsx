@@ -16,9 +16,9 @@ export const ButtonBox = (props: IButtonProps) => {
       <Button
         mode="contained"
         style={styles.button}
-        buttonColor={props.isDisabled ? '#431683' : '#6C24D3'}
+        buttonColor={props.isDisabled ? '#A68F00' : '#FFE600'}
         onPress={!props.isDisabled && props.onPress}>
-        <Text style={[styles.buttonText, {color: props.isDisabled ? '#b3b3b3': '#ffffff'}]}>{props.title}</Text>
+        <Text style={[styles.buttonText, {color: props.isDisabled ? 'rgba(0, 0, 0, 0.6)': '#000'}]}>{props.title}</Text>
       </Button>
     </View>
   );
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     fontFamily: 'ProximaBold',
     fontSize: 17,
     lineHeight: 21,
-    color: '#FFFFFF',
+    color: '#000',
     textTransform: 'uppercase',
   },
 });

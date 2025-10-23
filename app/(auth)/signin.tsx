@@ -45,10 +45,9 @@ export default function SignInScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#161616' }}>
       <View style={styles.container}>
         <LinearGradient
-          colors={["#4728E0", "#161616"]}
+          colors={["#E6CC00", "#161616"]}
           start={[0.5, 0]}
           end={[0.5, 1]}
           locations={[0, 0.7]}
@@ -56,9 +55,9 @@ export default function SignInScreen() {
         >
           <View>
             <Image
-              source={require('../../assets/images/logowhite.png')}
+              source={require('../../assets/images/esummitLogo.png')}
               style={styles.logo}
-              resizeMode="cover"
+              resizeMode="contain"
             />
           </View>
         </LinearGradient>
@@ -76,12 +75,12 @@ export default function SignInScreen() {
           />
         </View>
       </View>
-    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: "#161616",
     width: "100%",
     height: "100%",
