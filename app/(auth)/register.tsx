@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Alert, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, Button } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { router } from "expo-router";
@@ -43,21 +51,24 @@ export default function RegisterScreen() {
     }
 
     try {
-      const response = await axios.post("https://apiserver.ecell.in/app25/user/register/", {
-        email,
-        password,
-        firstName,
-        lastName,
-        contact: contactNumber,
-        profession,
-        state: "App",
-        country: "App",
-        pincode: "111111",
-      });
+      const response = await axios.post(
+        "https://apiserver.ecell.in/app25/user/register/",
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          contact: contactNumber,
+          profession,
+          state: "App",
+          country: "App",
+          pincode: "111111",
+        }
+      );
 
       if (response.data.success) {
         Alert.alert("Success", "You have registered successfully!");
-        router.replace('/signin');
+        router.replace("/signin");
       } else {
         Alert.alert("Error", response.data.message || "Registration failed.");
         console.log(response.data);
@@ -68,25 +79,33 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#161616' }}>
-      <View style={styles.container}>
-        <LinearGradient
-          colors={["#4728E0", "#161616"]}
-          start={[0.5, 0]}
-          end={[0.5, 1]}
-          locations={[0, 0.7]}
-          style={styles.header}
+    <View style={styles.container}>
+      <LinearGradient
+        colors={["#E6CC00", "#161616"]}
+        start={[0.5, 0]}
+        end={[0.5, 1]}
+        locations={[0, 0.9]}
+        style={styles.header}
+      >
+        <Image
+          source={require("../../assets/images/esummitLogo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </LinearGradient>
+
+      <Text style={styles.heading}>Register</Text>
+
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          style={styles.section}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <Image
-            source={require('../../assets/images/logowhite.png')}
-            style={styles.logo}
-            resizeMode="cover"
-          />
-        </LinearGradient>
-
-        <ScrollView style={styles.section}>
-          <Text style={styles.heading}>Register</Text>
-
           <TextInput
             label="Email"
             value={email}
@@ -94,6 +113,7 @@ export default function RegisterScreen() {
             keyboardType="email-address"
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <TextInput
             label="Password"
@@ -102,6 +122,7 @@ export default function RegisterScreen() {
             secureTextEntry
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <TextInput
             label="Confirm Password"
@@ -110,6 +131,7 @@ export default function RegisterScreen() {
             secureTextEntry
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <TextInput
             label="First Name"
@@ -117,6 +139,7 @@ export default function RegisterScreen() {
             onChangeText={setFirstName}
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <TextInput
             label="Last Name"
@@ -124,6 +147,7 @@ export default function RegisterScreen() {
             onChangeText={setLastName}
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <TextInput
             label="Contact Number"
@@ -132,6 +156,7 @@ export default function RegisterScreen() {
             keyboardType="phone-pad"
             style={styles.input}
             textColor="#FFFFFF"
+            activeUnderlineColor="#FFF260"
           />
           <DropDownPicker
             open={isProfessionDropdownOpen}
@@ -143,6 +168,7 @@ export default function RegisterScreen() {
             style={styles.dropdown}
             textStyle={{ color: "#FFFFFF" }}
             dropDownContainerStyle={styles.dropdownContainer}
+            listMode="SCROLLVIEW"
           />
 
           <Button
@@ -154,8 +180,8 @@ export default function RegisterScreen() {
             Register
           </Button>
         </ScrollView>
-      </View>
-    </SafeAreaView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -165,12 +191,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 214,
+    height: 200,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
   },
   section: {
-    padding: 20,
+    paddingHorizontal: 20,
     flex: 1,
   },
   heading: {
@@ -179,7 +205,7 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     color: "#FFFFFF",
     textTransform: "uppercase",
-    marginBottom: 20,
+    margin: 20,
   },
   input: {
     marginBottom: 15,
@@ -194,11 +220,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#1F2122",
   },
   button: {
-    marginTop: 20,
-    backgroundColor: "#4728E0",
+    marginVertical: 20,
+    backgroundColor: "#E6CC00",
   },
   logo: {
-    width: 310,
+    width: 300,
     height: 106,
   },
 });
