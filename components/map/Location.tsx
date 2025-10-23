@@ -15,8 +15,8 @@ export const Location = (props: ILocationProps) => {
     <TouchableOpacity onPress={() => Linking.openURL(url as string)}>
       <View style={styles.container}>
         <Text style={styles.name}>{props.name.length > 12 ? `${props.name.slice(0, 12)}...` : props.name}</Text>
-        <Image source={{ uri: props.image }} style={styles.image} resizeMode="cover" />
-        <Image source={require('../../assets/images/direction.png')} style={styles.icon} resizeMode="cover" />
+        <Image source={{ uri: props.image }} style={styles.image} resizeMode="contain" />
+        <Image source={require('../../assets/images/directionYellow.png')} style={styles.icon} resizeMode="cover" />
       </View>
     </TouchableOpacity>
   );
@@ -33,14 +33,17 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     borderRadius: 25,
     padding: 20,
+    paddingBottom: 0,
     overflow: 'hidden',
     position: 'relative',
   },
   image: {
-    height: 117,
-    aspectRatio: 1,
-    bottom: 11,
-    right: 18,
+    height: 125,
+    flex: 1,
+    width: 100,
+    position: 'absolute',
+    bottom: -13,
+    left: 10,
   },
   icon: {
     width: 40,
@@ -50,6 +53,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
   name: {
+    zIndex: 100,
     fontFamily: 'Proxima',
     fontSize: 18,
     color: '#fff',

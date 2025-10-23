@@ -2,10 +2,11 @@ import React from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Location } from '../../components/map';
 import { useVenues } from '../../hooks/query/other-query';
+import { IEventData } from '@/types/api/events.types';
 
 export default function MapsScreen() {
   const { data: Venues, isLoading, refetch } = useVenues();
-  const venuedata = Venues?.data;
+  const venuedata = (Venues as any)?.data;
 
   console.log('Venues Response:', Venues);
   console.log('Venue Data:', venuedata);
@@ -28,11 +29,11 @@ export default function MapsScreen() {
             style={{ marginTop: 20 }}
           />
         ) : (
-          <View style={{ height: '100%', marginBottom: 80 }}>
+          <View style={{ height: '100%', marginBottom: 90 }}>
             <Text style={styles.title}>VENUES</Text>
             <View style={styles.content}>
               {venuedata && venuedata.length > 0 ? (
-                venuedata.map((item, index) => (
+                venuedata.map((item: any, index: number) => (
                   <View key={index}>
                     <Location
                       name={item.name}
@@ -58,7 +59,6 @@ export default function MapsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
   },
   scrollView: {
     flex: 1,

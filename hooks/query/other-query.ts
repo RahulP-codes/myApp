@@ -23,7 +23,7 @@ export const useSchedule = () => {
 };
 
 export const useVenues = () => {
-  return useQuery({
+  return useQuery<any>({
     queryKey: ['venues'],
     queryFn: getVenues,
     retry: 1,
