@@ -1,21 +1,23 @@
 // Splash Screen - Entry point
-import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useProfileStore } from '../store/profile-store';
-import { useUserDetailMutation } from '../hooks/mutation/user-action-mutation';
-import LogoSvg from '../components/svgs/logo';
-import EcellSvg from '../components/svgs/ecell';
-import { ADMIN_EMAIL } from '../constants';
+import { useEffect } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useProfileStore } from "../store/profile-store";
+import { useUserDetailMutation } from "../hooks/mutation/user-action-mutation";
+import EcellSvg from "../components/svgs/ecell";
+import { ADMIN_EMAIL } from "../constants";
 
 export default function SplashScreen() {
-  const setProfile = useProfileStore(state => state.setProfile);
+  const setProfile = useProfileStore((state) => state.setProfile);
   const { mutateAsync: autoLogin } = useUserDetailMutation();
 
   const checkAuth = async () => {
-    const email = await AsyncStorage.getItem("Esummit24email");
-  
+    const [email] = await Promise.all([
+      AsyncStorage.getItem("Esummit24email"),
+      new Promise(resolve => setTimeout(resolve, 2000)) // 2 second delay
+    ]);
+
     if (email !== null) {
       if (email === ADMIN_EMAIL) {
         setProfile({
@@ -26,7 +28,7 @@ export default function SplashScreen() {
           isSignedIn: true,
           isAdmin: true,
         });
-        router.replace('/(tabs)');
+        router.replace("/(tabs)");
       } else {
         autoLogin({ email }).then((res) => {
           if (res.success) {
@@ -39,12 +41,16 @@ export default function SplashScreen() {
                 isSignedIn: true,
                 isGuest: true,
               });
-              router.replace('/(tabs)');
+              router.replace("/(tabs)");
             } else {
-              const summitPassLevel = 
-                res.data.user.summit_pass === 'lvl1' ? 'Silver' :
-                res.data.user.summit_pass === 'lvl2' ? 'Gold' :
-                res.data.user.summit_pass === 'lvl3' ? 'Platinum' : 'Unknown';
+              const summitPassLevel =
+                res.data.user.summit_pass === "lvl1"
+                  ? "Silver"
+                  : res.data.user.summit_pass === "lvl2"
+                  ? "Gold"
+                  : res.data.user.summit_pass === "lvl3"
+                  ? "Platinum"
+                  : "Unknown";
 
               setProfile({
                 email: res.data.user.email,
@@ -53,22 +59,22 @@ export default function SplashScreen() {
                 pass: summitPassLevel,
                 isSignedIn: true,
                 isAdmin: res.data.user.isadmin || false,
-                isGuest: false
+                isGuest: false,
               });
 
               if (res.profileBuilt) {
-                router.replace('/(tabs)');
+                router.replace("/(tabs)");
               } else {
-                router.replace('/(profile-build)');
+                router.replace("/register");
               }
             }
           } else {
-            router.replace('/signin');
+            router.replace("/signin");
           }
         });
       }
     } else {
-      router.replace('/signin');
+      router.replace("/signin");
     }
   };
 
@@ -78,7 +84,11 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <LogoSvg />
+      <Image
+        source={require("../assets/images/esummitLogo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <View style={styles.section}>
         <Text style={styles.text}>from</Text>
         <EcellSvg width={85.6} height={90} />
@@ -90,19 +100,24 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#121212'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#121212",
+  },
+  logo: {
+    width: 310,
+    height: 106,
+    marginBottom: 20,
   },
   section: {
-    alignItems: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    position: "absolute",
     bottom: 28,
   },
   text: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 20,
     lineHeight: 24,
-    textTransform: 'lowercase',
+    textTransform: "lowercase",
   },
 });
