@@ -6,13 +6,13 @@ export const Footer = ({ state, descriptors, navigation }: any) => {
     <View style={[styles.tabBarContainer]}>
       <View style={styles.shadowWrapper}>
         <LinearGradient
-          colors={["#24347F", "#4A4C8B"]}
+          colors={["#cebc1cff", "#cebc1cff"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.borderContainer}
         >
           <LinearGradient
-            colors={["#B6A400", "#998A00"]}
+            colors={["#cebc1cff", "#cebc1cff"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.mainGradient}
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     right: "3%",
   },
   shadowWrapper: {
-    shadowColor: "#5647f5",
+    shadowColor: "#f4f139ff",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 20,

@@ -56,51 +56,60 @@ export const ConnectCard = (props: IConnectBoxProps) => {
     }
   };
 
+  // pick image based on type
+  const getImage = () => {
+    switch (props.persontype) {
+      case 'Founder':
+        return require('../../assets/images/founder.png');
+      case 'Mentor':
+        return require('../../assets/images/mentor.png');
+      case 'Professional':
+        return require('../../assets/images/prof.png');
+      case 'Student':
+        return require('../../assets/images/student.png');
+      default:
+        return require('../../assets/images/investor.png');
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={() => props.navigation.navigate('SingleConnect', { id: props.id })}>
-      <View style={styles.container}>
-        <View style={styles.container2}>
-          <View style={styles.content}>
-            {props.persontype === 'Founder' ? (
-              <Image source={require('../../assets/images/founder.png')} />
-            ) : props.persontype === 'Mentor' ? (
-              <Image source={require('../../assets/images/mentor.png')} />
-            ) : props.persontype === 'Professional' ? (
-              <Image source={require('../../assets/images/prof.png')} />
-            ) : props.persontype === 'Student' ? (
-              <Image source={require('../../assets/images/student.png')} />
-            ) : (
-              <Image source={require('../../assets/images/investor.png')} />
-            )}
+    <TouchableOpacity
+      onPress={() =>
+        props.navigation.navigate('SingleConnect', { id: props.id })
+      }>
+      <View style={styles.card}>
+        {/* LEFT: Avatar with Glow */}
+        <View style={styles.avatarContainer}>
+          <View style={styles.glowCircle}>
+            <Image source={getImage()} style={styles.avatar} />
           </View>
+        </View>
 
-          <View style={styles.content2}>
-            {props.name === null || props.name === undefined ? (
-              <Text style={styles.event}>Field is empty</Text>
-            ) : (
-              <Text style={styles.event}>{props.name}</Text>
-            )}
+        {/* RIGHT: Details */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.nameText}>
+            {props.name ? props.name : 'Field is empty'}
+          </Text>
 
-            {props.company_name === null || props.company_name === undefined ? (
-              <Text style={styles.venue}>Field is empty</Text>
-            ) : (
-              <Text numberOfLines={2} style={styles.venue}>{props.company_name}</Text>
-            )}
+          <Text numberOfLines={1} style={styles.instituteText}>
+            {props.company_name ? props.company_name : 'Field is empty'}
+          </Text>
 
-            {props.persontype === null || props.persontype === undefined ? (
-              <Text style={styles.persontype}>{'●'} Field is empty</Text>
-            ) : (
-              <Text style={styles.persontype}>{'●'} {props.persontype}</Text>
-            )}
-          </View>
-          
-          <View>
-            <TouchableOpacity style={{ width: '100%', alignSelf: 'center' }}>
-              <Button style={[styles.button, { marginTop: 10 }]} onPress={handleSubmit} disabled={props.btnText === 'Requested'}>
-                <Text style={styles.buttonText}>{props.btnText}</Text>
-              </Button>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.typeText}>
+            {'● '}
+            {props.persontype ? props.persontype : 'Field is empty'}
+          </Text>
+
+          <TouchableOpacity
+            style={{ width: '60%', alignSelf: 'flex-start' }}
+            disabled={props.btnText === 'Requested'}>
+            <Button
+              style={styles.button}
+              onPress={handleSubmit}
+              disabled={props.btnText === 'Requested'}>
+              <Text style={styles.buttonText}>{props.btnText}</Text>
+            </Button>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -108,54 +117,76 @@ export const ConnectCard = (props: IConnectBoxProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 5,
-    width: Dimensions.get('window').width / 2 - 20,
-    height: Dimensions.get('window').height / 2.5,
-  },
-  container2: {
-    width: '100%',
-    backgroundColor: 'hsla(0, 0.00%, 100.00%, 0.05)',
-    borderRadius: 14,
-    padding: 25,
-    justifyContent: 'center',
-    height: '100%',
-  },
-  content: {
-    width: '100%',
+  card: {
     flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    marginVertical: 10,
+    width: Dimensions.get('window').width * 0.9,
+    alignSelf: 'center',
+  },
+  avatarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  glowCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 230, 0, 0.15)', // soft yellow glow
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#FFE600',
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    resizeMode: 'contain',
+    backgroundColor: 'transparent',
+  },
+  detailsContainer: {
+    flex: 1,
     justifyContent: 'center',
   },
-  content2: {
-    paddingVertical: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+  nameText: {
+    fontFamily: 'Poppins-Bold',
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
+    marginBottom: 4,
   },
-  event: {
-    fontFamily: 'ProximaBold',
-    color: '#fff',
-    fontSize: 16,
+  instituteText: {
+    fontFamily: 'Poppins-Regular',
+    color: '#C4C4C4',
+    fontSize: 14,
+    marginBottom: 3,
   },
-  venue: {
-    fontFamily: 'Proxima',
-    color: '#9D9D9D',
-    fontSize: 12,
-  },
-  persontype: {
+  typeText: {
+    fontFamily: 'Poppins-Medium',
     color: '#FFE600',
-    fontSize: 10,
+    fontSize: 12,
+    marginBottom: 8,
   },
   button: {
-    paddingHorizontal: 11,
-    height: 30,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: '#FFE600',
-    color: '#000000',
-    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 190,
   },
   buttonText: {
-    fontSize: 10,
-    lineHeight: 15,
-    color: '#000000',
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    color: '#ab9e9eff',
   },
 });
+
+export default ConnectCard;
